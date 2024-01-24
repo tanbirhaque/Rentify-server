@@ -32,11 +32,13 @@ async function run() {
         const Propertycollection = client.db("RentifyDB").collection('Property')
         const Requested_Propertiestcollection = client.db("RentifyDB").collection('Requested_Properties')
 
+        // this data get by sojib
         app.get('/property', async (req, res) => {
             const result = await Propertycollection.find().toArray();
             res.send(result)
         })
 
+        // property data requeste post by sojib
         app.post('/requested-properties', async (req, res) => {
             const propertyrequest = req.body;
             const result = await Requested_Propertiestcollection.insertOne(propertyrequest)
