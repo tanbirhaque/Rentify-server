@@ -29,12 +29,55 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+        const Propertycollection = client.db("RentifyDB").collection('Property')
+        const Requested_Propertiestcollection = client.db("RentifyDB").collection('Requested_Properties')
+
+        // this data get by sojib
+        app.get('/property', async (req, res) => {
+            const result = await Propertycollection.find().toArray();
+            res.send(result)
+        })
+
+        // property data requeste post by sojib
+        app.post('/requested-properties', async (req, res) => {
+            const propertyrequest = req.body;
+            const result = await Requested_Propertiestcollection.insertOne(propertyrequest)
+            res.send(result)
+        })
+
+        // Request property data individulally get by property for..This work have done by sojib
+        app.get('/requested-sale', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const Requested_Properties = await Requested_Propertiestcollection.find(query).toArray();
+            if (Requested_Properties) {
+                const result = Requested_Properties.filter(item => item?.property?.property_for === 'sale')
+                res.send(result)
+            }
+            else{
+                return res.status(401).send({ message: 'unathourized access' })
+            }
+        })
+
+        app.get('/requested-rent', async (req, res) => {
+            const email = req.query.email;
+            const query = { email: email }
+            const Requested_Properties = await Requested_Propertiestcollection.find(query).toArray();
+            if (Requested_Properties) {
+                const result = Requested_Properties.filter(item => item?.property?.property_for === 'rent')
+                res.send(result)
+            }
+            else{
+                return res.status(401).send({ message: 'unathourized access' })
+            }
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        // await client.close();
     }
 }
 run().catch(console.dir);
