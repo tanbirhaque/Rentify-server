@@ -30,18 +30,26 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
         const Propertycollection = client.db("RentifyDB").collection('Property')
-        const Requested_Propertiestcollection = client.db("RentifyDB").collection('Requested_Properties')
+        const Requested_Propertytcollection = client.db("RentifyDB").collection('Requested_Properties')
+
+        //TODO: this data post by sojib
+        app.post('/properties', async (req, res) => {
+            const propertyInfo = req.body;
+            const result = await Propertycollection.insertOne(propertyInfo)
+            res.send(result)
+        })
 
         // this data get by sojib
-        app.get('/property', async (req, res) => {
+        app.get('/properties', async (req, res) => {
+            // update property to properties crud link
             const result = await Propertycollection.find().toArray();
             res.send(result)
         })
 
         // property data requeste post by sojib
         app.post('/requested-properties', async (req, res) => {
-            const propertyrequest = req.body;
-            const result = await Requested_Propertiestcollection.insertOne(propertyrequest)
+            const propertiesRequest = req.body;
+            const result = await Requested_Propertytcollection.insertOne(propertiesRequest)
             res.send(result)
         })
 
@@ -49,12 +57,12 @@ async function run() {
         app.get('/requested-sale', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
-            const Requested_Properties = await Requested_Propertiestcollection.find(query).toArray();
+            const Requested_Properties = await Requested_Propertytcollection.find(query).toArray();
             if (Requested_Properties) {
                 const result = Requested_Properties.filter(item => item?.property?.property_for === 'sale')
                 res.send(result)
             }
-            else{
+            else {
                 return res.status(401).send({ message: 'unathourized access' })
             }
         })
@@ -62,12 +70,12 @@ async function run() {
         app.get('/requested-rent', async (req, res) => {
             const email = req.query.email;
             const query = { email: email }
-            const Requested_Properties = await Requested_Propertiestcollection.find(query).toArray();
+            const Requested_Properties = await Requested_Propertytcollection.find(query).toArray();
             if (Requested_Properties) {
                 const result = Requested_Properties.filter(item => item?.property?.property_for === 'rent')
                 res.send(result)
             }
-            else{
+            else {
                 return res.status(401).send({ message: 'unathourized access' })
             }
         })
