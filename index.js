@@ -32,7 +32,7 @@ async function run() {
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
 
     // data get by Sojib
-    app.get("/property", async (req, res) => {
+    app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
     });
