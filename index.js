@@ -24,9 +24,7 @@ const client = new MongoClient(uri, {
 });
 
 async function run() {
-
   try {
-
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
     const Requested_PropertiesCollection = client
@@ -34,12 +32,12 @@ async function run() {
       .collection("Requested_Properties");
 
     // data get by Sojib
-    app.get("/property", async (req, res) => {
+    app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
     });
 
-    // property data request post by Sojib
+    // request for property data post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
       const result = await Requested_PropertiesCollection.insertOne(
@@ -48,8 +46,17 @@ async function run() {
       res.send(result);
     });
 
+
+    //request for property data get by Fahima
+    app.get("/requested-properties/:email", async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email };
+      const result = await Requested_PropertiesCollection.find(query).toArray();
+      res.send(result);
+    });
+
     // Request property data individually get by Sojib
-    app.get("/requested-sale", async (req, res) => {
+    app.get("/requested-sale/:email", async (req, res) => {
       const email = req.query.email;
       const query = { email: email };
       const Requested_Properties = await Requested_PropertiesCollection.find(
@@ -80,18 +87,34 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //coded by Sojib
 
     //coded by Fahima
-
     const Saved_PropertiesCollection = client
       .db("RentifyDB")
       .collection("Saved_Properties");
 
     //single property data
-    app.get("/property/:id", async (req, res) => {
+    app.get("/properties/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await PropertyCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    //to save property data to backend
+    app.post("/saved-properties", async (req, res) => {
+      const savedProperties = req.body;
+      const result = await Saved_PropertiesCollection.insertOne(
+        savedProperties
+      );
+      res.send(result);
+    });
+
+    app.get("/saved-properties", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const result = await Saved_PropertiesCollection.find(query).toArray();
       res.send(result);
     });
 
