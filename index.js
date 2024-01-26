@@ -37,6 +37,7 @@ async function run() {
             const result = await PropertyCollection.insertOne(newProperty)
             res.send(result)
         })
+
         // data get by Sojib
         app.get("/properties", async (req, res) => {
             const result = await PropertyCollection.find().toArray();
@@ -55,7 +56,7 @@ async function run() {
         // Request property data individually get by Sojib
         app.get("/requested-sale", async (req, res) => {
             const email = req.query.email;
-            const query = { email: email };
+            const query = { requesterEmail: email };
             const Requested_Properties = await Requested_PropertiesCollection.find(
                 query
             ).toArray();
@@ -71,7 +72,7 @@ async function run() {
 
         app.get("/requested-rent", async (req, res) => {
             const email = req.query.email;
-            const query = { email: email };
+            const query = { requesterEmail: email };
             const Requested_Properties = await Requested_PropertiesCollection.find(
                 query
             ).toArray();
