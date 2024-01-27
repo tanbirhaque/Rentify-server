@@ -44,16 +44,6 @@ async function run() {
       res.send(result);
     });
 
-    // property data request post by Sojib
-
-
-    app.post("/requested-properties", async (req, res) => {
-      const propertyRequest = req.body;
-      const result = await Requested_PropertiesCollection.insertOne(
-        propertyRequest
-      );
-      res.send(result);
-    });
 
     // Request property data individually get by Sojib
     app.get("/requested-properties", async (req, res) => {
@@ -61,39 +51,48 @@ async function run() {
       res.send(result);
     });
 
+    // This API will call all the requested user properties by email address, including rental and sale properties. [by- Tanbir]
+    app.get("/all_requested", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const result = await Requested_PropertiesCollection.find(query).toArray();
+      res.send(result);
+    });
 
+    // This API calls all the requested properties (For Sale) of an user by the user's email address. [by- Tanbir]
+    app.get("/requested-sale", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      if (Requested_Properties) {
+        const result = Requested_Properties.filter((item) => item?.property?.property_for == "sale");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
 
-    // app.get("/requested-sale", async (req, res) => {
-    //   const email = req.query.email;
-    //   const query = { requesterEmail: email };
-    //   const Requested_Properties = await Requested_PropertiesCollection.find(
-    //     query
-    //   ).toArray();
-    //   if (Requested_Properties) {
-    //     const result = Requested_Properties.filter(
-    //       (item) => item?.property?.property_for === "sale"
-    //     );
-    //     res.send(result);
-    //   } else {
-    //     return res.status(401).send({ message: "unauthorized access" });
-    //   }
-    // });
+    // This API calls all the requested properties (For Rent) of an user by the user's email address. [by- Tanbir]
+    app.get("/requested-rent", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      if (Requested_Properties) {
+        const result = Requested_Properties.filter((item) => item?.property?.property_for == "rent");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
 
-    // app.get("/requested-rent", async (req, res) => {
-    //   const email = req.query.email;
-    //   const query = { requesterEmail: email };
-    //   const Requested_Properties = await Requested_PropertiesCollection.find(
-    //     query
-    //   ).toArray();
-    //   if (Requested_Properties) {
-    //     const result = Requested_Properties.filter(
-    //       (item) => item?.property?.property_for === "rent"
-    //     );
-    //     res.send(result);
-    //   } else {
-    //     return res.status(401).send({ message: "unauthorized access" });
-    //   }
-    // });
+    // property data request post by Sojib
+    app.post("/requested-properties", async (req, res) => {
+      const propertyRequest = req.body;
+      const result = await Requested_PropertiesCollection.insertOne(
+        propertyRequest
+      );
+      res.send(result);
+    });
 
 
 
