@@ -109,6 +109,18 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/all-saved", async (req, res) => {
+      try {
+        const userEmail = req.query.email;
+        const query = { savedUserEmail: userEmail }; // Update the field name to match 'savedUserEmail'
+        const result = await Saved_PropertiesCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Error retrieving properties:", error);
+        res.status(500).send("Internal server error.");
+      }
+    });
+
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -125,17 +137,7 @@ async function run() {
     //   res.send(result);
     // });
 
-    app.get("/saved-properties", async (req, res) => {
-      try {
-        const userEmail = req.query.email;
-        const query = { savedUserEmail: userEmail }; // Update the field name to match 'savedUserEmail'
-        const result = await Saved_PropertiesCollection.find(query).toArray();
-        res.send(result);
-      } catch (error) {
-        console.error("Error retrieving properties:", error);
-        res.status(500).send("Internal server error.");
-      }
-    });
+
 
 
 
