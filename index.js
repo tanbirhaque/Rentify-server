@@ -44,10 +44,12 @@ async function run() {
             res.send(result);
         });
 
+
+
         // this api add by sojib for test
         app.get("/owner-properties", async (req, res) => {
             const email = req.query.email;
-            const query = { owner_email : email }
+            const query = { owner_email: email }
             const result = await PropertyCollection.find(query).toArray();
             res.send(result)
         })
