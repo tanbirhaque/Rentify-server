@@ -27,8 +27,13 @@ async function run() {
   try {
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
-    const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
-    const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
+    const Requested_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Requested_Properties");
+    const Saved_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Saved_Properties");
+    const userCollection = client.db("RentifyDB").collection("users");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -46,7 +51,6 @@ async function run() {
 
     // property data request post by Sojib
 
-
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
       const result = await Requested_PropertiesCollection.insertOne(
@@ -60,8 +64,6 @@ async function run() {
       const result = await Requested_PropertiesCollection.find().toArray();
       res.send(result);
     });
-
-
 
     // app.get("/requested-sale", async (req, res) => {
     //   const email = req.query.email;
@@ -95,21 +97,13 @@ async function run() {
     //   }
     // });
 
-
-
-
-
     //coded by Fahima
-
-
-
 
     //to save property data to backend
     app.get("/saved-properties", async (req, res) => {
       const result = await Saved_PropertiesCollection.find().toArray();
       res.send(result);
     });
-
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -138,12 +132,18 @@ async function run() {
       }
     });
 
+    //for users
 
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const result = await userCollection.insertOne(users);
+      res.send(result);
+    });
 
-
-
-
-
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
 
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
