@@ -11,17 +11,16 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri =
-    "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
-    serverApi: {
-        version: ServerApiVersion.v1,
-        strict: true,
-        deprecationErrors: true,
-    },
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
 });
 
 async function run() {
@@ -43,7 +42,7 @@ async function run() {
       const newProperty = req.body;
       const result = await PropertyCollection.insertOne(newProperty)
       res.send(result)
-  })
+    })
 
     //single property data
     app.get("/properties/:id", async (req, res) => {
@@ -147,9 +146,9 @@ async function run() {
     });
 
     // payment intent api by Rana
-    app.post("/create-payment-intent", async(req, res) => {
+    app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
-      const amount = parseInt (price * 100);
+      const amount = parseInt(price * 100);
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
@@ -161,11 +160,11 @@ async function run() {
       })
     });
 
-    app.post("/payments", async(req, res) => {
+    app.post("/payments", async (req, res) => {
       const payment = req.body;
       const paymentResult = await paymentCollection.insertOne(payment);
       console.log('payment info', paymentResult);
-      const query = {_id: new ObjectId(payment.requestId)};
+      const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
       res.send({ paymentResult, deleteRes });
     });
@@ -183,13 +182,13 @@ async function run() {
     // Ensures that the client will close when you finish/error
     // await client.close();
   }
-
+}
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-    res.send("Rentify is running");
+  res.send("Rentify is running");
 });
 
 app.listen(port, () => {
-    console.log(`Rentify server is running on port ${port}`);
+  console.log(`Rentify server is running on port ${port}`);
 });
