@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
+const stripe = require('stripe')('sk_test_51OHt7bH9TPzhm8dE66bT3iPfXwM7PkMVIQOV9oY6shFfWcz14y7iTmRbgFXXv0kevpLgN8pk4hbWjJIF2tut9NRl00pH4ykAY6'); //for payment by Rana;
 const port = process.env.PORT || 5000;
 
 // comment update
@@ -29,19 +30,20 @@ async function run() {
     const PropertyCollection = client.db("RentifyDB").collection("Property");
     const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
-
-    // This is the API for adding properties [by- sojib] 
-    app.post("/properties", async (req, res) => {
-      const newProperty = req.body;
-      const result = await PropertyCollection.insertOne(newProperty)
-      res.send(result)
-    })
+    const paymentCollection = client.db("RentifyDB").collection("payments");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
     });
+
+    // This is the API for adding properties [by- sojib] 
+    app.post("/properties", async (req, res) => {
+      const newProperty = req.body;
+      const result = await PropertyCollection.insertOne(newProperty)
+      res.send(result)
+  })
 
     //single property data
     app.get("/properties/:id", async (req, res) => {
@@ -117,6 +119,26 @@ async function run() {
       }
     });
 
+    app.put('/accept/:id', async(req,res)=>{
+      const id =req.params.id;
+      const query ={_id: new ObjectId(id)}
+      const updateStatus ={$set:{
+        requestStatus:"accepted"
+      }}
+      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+      res.send(result)
+    })
+    app.put('/reject/:id', async(req,res)=>{
+      const id =req.params.id;
+      const query ={_id: new ObjectId(id)}
+      const updateStatus ={$set:{
+        requestStatus:"rejected"
+      }}
+      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+      res.send(result)
+    })
+
+
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
@@ -141,18 +163,6 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/all-saved", async (req, res) => {
-      try {
-        const userEmail = req.query.email;
-        const query = { savedUserEmail: userEmail }; // Update the field name to match 'savedUserEmail'
-        const result = await Saved_PropertiesCollection.find(query).toArray();
-        res.send(result);
-      } catch (error) {
-        console.error("Error retrieving properties:", error);
-        res.status(500).send("Internal server error.");
-      }
-    });
-
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -169,13 +179,41 @@ async function run() {
     //   res.send(result);
     // });
 
+    app.get("/saved-properties", async (req, res) => {
+      try {
+        const userEmail = req.query.email;
+        const query = { savedUserEmail: userEmail }; // Update the field name to match 'savedUserEmail'
+        const result = await Saved_PropertiesCollection.find(query).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Error retrieving properties:", error);
+        res.status(500).send("Internal server error.");
+      }
+    });
 
+    // payment intent api by Rana
+    app.post("/create-payment-intent", async(req, res) => {
+      const { price } = req.body;
+      const amount = parseInt (price * 100);
 
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: 'usd',
+        payment_method_types: ['card']
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret
+      })
+    });
 
-
-
-
-
+    app.post("/payments", async(req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+      console.log('payment info', paymentResult);
+      const query = {_id: new ObjectId(payment.requestId)};
+      const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
+      res.send({ paymentResult, deleteRes });
+    });
 
 
     //code by Fahima
