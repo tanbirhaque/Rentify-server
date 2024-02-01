@@ -31,6 +31,7 @@ async function run() {
     const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
     const paymentCollection = client.db("RentifyDB").collection("payments");
+    const userCollection = client.db("RentifyDB").collection("users");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -52,7 +53,6 @@ async function run() {
       const result = await PropertyCollection.find(query).toArray();
       res.send(result);
     });
-
 
     // Request property data individually get by Sojib
     app.get("/requested-properties", async (req, res) => {
@@ -103,21 +103,13 @@ async function run() {
       res.send(result);
     });
 
-
-
-
-
     //coded by Fahima
-
-
-
 
     //to save property data to backend
     app.get("/saved-properties", async (req, res) => {
       const result = await Saved_PropertiesCollection.find().toArray();
       res.send(result);
     });
-
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -146,6 +138,18 @@ async function run() {
       }
     });
 
+    //for users
+
+    app.post("/users", async (req, res) => {
+      const users = req.body;
+      const result = await userCollection.insertOne(users);
+      res.send(result);
+    });
+
+    app.get("/users", async (req, res) => {
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    });
     // payment intent api by Rana
     app.post("/create-payment-intent", async(req, res) => {
       const { price } = req.body;
@@ -169,7 +173,6 @@ async function run() {
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
       res.send({ paymentResult, deleteRes });
     });
-
 
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
