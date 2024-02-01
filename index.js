@@ -137,7 +137,7 @@ async function run() {
       const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
       res.send(result)
     })
-
+    
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
