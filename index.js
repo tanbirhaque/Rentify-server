@@ -94,7 +94,7 @@ async function run() {
       }
     });
 
-    //This API calls the rent request of an owner by konika
+    //This API calls the rent & sale request of an owner by konika
 
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
@@ -119,6 +119,7 @@ async function run() {
       }
     });
 
+
     app.put('/accept/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -130,6 +131,7 @@ async function run() {
       const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
+    
     app.put('/reject/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -142,6 +144,33 @@ async function run() {
       res.send(result)
     })
 
+    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    app.get("/rentOut", async (req, res) => {
+      const email = req.query.email;
+      const query = {owner: email};
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter((item) => item?.property_status == "Rented");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+    app.get("/soldOut", async (req, res) => {
+      const email = req.query.email;
+      const query = {owner: email};
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter((item) => item?.property_status == "Sold");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
