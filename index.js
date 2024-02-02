@@ -110,12 +110,12 @@ async function run() {
 
 
 
-
+    // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
     //to save property data to backend
-    app.get("/saved-properties", async (req, res) => {
-      const result = await Saved_PropertiesCollection.find().toArray();
-      res.send(result);
-    });
+    // app.get("/saved-properties", async (req, res) => {
+    //   const result = await Saved_PropertiesCollection.find().toArray();
+    //   res.send(result);
+    // });
 
 
     app.post("/saved-properties", async (req, res) => {
@@ -126,13 +126,7 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/saved-properties", async (req, res) => {
-    //   const email = req.query.email;
-    //   const query = { email: email };
-    //   const result = await Saved_PropertiesCollection.find(query).toArray();
-    //   res.send(result);
-    // });
-
+    // This Api Is for getting saved properties for individual users. By Email query
     app.get("/saved-properties", async (req, res) => {
       try {
         const userEmail = req.query.email;
