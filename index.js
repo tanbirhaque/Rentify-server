@@ -150,12 +150,9 @@ async function run() {
 
     //coded by Fahima
 
-<<<<<<< HEAD
 
 
     // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
-=======
->>>>>>> a54e570ed4f03276f8c77a3b893e96c9ea5ffc81
     //to save property data to backend
     // app.get("/saved-properties", async (req, res) => {
     //   const result = await Saved_PropertiesCollection.find().toArray();
