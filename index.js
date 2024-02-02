@@ -119,25 +119,29 @@ async function run() {
       }
     });
 
-    app.put('/accept/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"accepted"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/accept/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    app.put('/reject/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"rejected"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/reject/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    
+
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
@@ -150,12 +154,9 @@ async function run() {
 
     //coded by Fahima
 
-<<<<<<< HEAD
 
 
     // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
-=======
->>>>>>> a54e570ed4f03276f8c77a3b893e96c9ea5ffc81
     //to save property data to backend
     // app.get("/saved-properties", async (req, res) => {
     //   const result = await Saved_PropertiesCollection.find().toArray();
@@ -183,8 +184,8 @@ async function run() {
       }
     });
 
-    //for users
 
+    //for users API created by Fahima
     app.post("/users", async (req, res) => {
       const users = req.body;
       const result = await userCollection.insertOne(users);
@@ -216,7 +217,16 @@ async function run() {
       console.log('payment info', paymentResult);
       const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
-      res.send({ paymentResult, deleteRes });
+
+      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      const filter = { _id: new ObjectId(payment.propertyId) };
+      const updateDoc = {
+        $set: {
+          'property_info.property_details.property_status': payment.property_status
+        },
+      };
+      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+      res.send({ paymentResult, deleteRes, patchRes });
     });
 
     //code by Fahima
