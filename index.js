@@ -12,11 +12,16 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 <<<<<<< HEAD
+<<<<<<< HEAD
 const uri = "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 =======
 const uri =
   "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 >>>>>>> Development
+=======
+const uri = "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
+
+>>>>>>> e855e14da3d7f3d240e35603ae447781a778ec97
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -158,11 +163,17 @@ async function run() {
 
     //coded by Fahima
 
+<<<<<<< HEAD
+
+
+    // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
+=======
+>>>>>>> a54e570ed4f03276f8c77a3b893e96c9ea5ffc81
     //to save property data to backend
-    app.get("/saved-properties", async (req, res) => {
-      const result = await Saved_PropertiesCollection.find().toArray();
-      res.send(result);
-    });
+    // app.get("/saved-properties", async (req, res) => {
+    //   const result = await Saved_PropertiesCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -172,13 +183,7 @@ async function run() {
       res.send(result);
     });
 
-    // app.get("/saved-properties", async (req, res) => {
-    //   const email = req.query.email;
-    //   const query = { email: email };
-    //   const result = await Saved_PropertiesCollection.find(query).toArray();
-    //   res.send(result);
-    // });
-
+    // This Api Is for getting saved properties for individual users. By Email query
     app.get("/saved-properties", async (req, res) => {
       try {
         const userEmail = req.query.email;
