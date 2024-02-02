@@ -44,7 +44,7 @@ async function run() {
       const newProperty = req.body;
       const result = await PropertyCollection.insertOne(newProperty)
       res.send(result)
-  })
+    })
 
     //single property data
     app.get("/properties/:id", async (req, res) => {
@@ -119,25 +119,29 @@ async function run() {
       }
     });
 
-    app.put('/accept/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"accepted"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/accept/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    app.put('/reject/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"rejected"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/reject/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    
+
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
@@ -183,8 +187,8 @@ async function run() {
       }
     });
 
-    //for users
 
+    //for users API created by Fahima
     app.post("/users", async (req, res) => {
       const users = req.body;
       const result = await userCollection.insertOne(users);
@@ -196,9 +200,9 @@ async function run() {
       res.send(result);
     });
     // payment intent api by Rana
-    app.post("/create-payment-intent", async(req, res) => {
+    app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
-      const amount = parseInt (price * 100);
+      const amount = parseInt(price * 100);
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
@@ -210,13 +214,22 @@ async function run() {
       })
     });
 
-    app.post("/payments", async(req, res) => {
+    app.post("/payments", async (req, res) => {
       const payment = req.body;
       const paymentResult = await paymentCollection.insertOne(payment);
       console.log('payment info', paymentResult);
-      const query = {_id: new ObjectId(payment.requestId)};
+      const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
-      res.send({ paymentResult, deleteRes });
+
+      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      const filter = { _id: new ObjectId(payment.propertyId) };
+      const updateDoc = {
+        $set: {
+          'property_info.property_details.property_status': payment.property_status
+        },
+      };
+      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+      res.send({ paymentResult, deleteRes, patchRes });
     });
 
     //code by Fahima
