@@ -49,6 +49,125 @@ async function run() {
       res.send(result);
     });
 
+    // Request property data individually get by Sojib
+    app.get("/requested-properties", async (req, res) => {
+      const result = await Requested_PropertiesCollection.find().toArray();
+      res.send(result);
+    });
+
+    // This API will call all the requested user properties by email address, including rental and sale properties. [by- Tanbir]
+    app.get("/all_requested", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const result = await Requested_PropertiesCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    // This API calls all the requested properties (For Sale) of an user by the user's email address. [by- Tanbir]
+    app.get("/requested-sale", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      if (Requested_Properties) {
+        const result = Requested_Properties.filter((item) => item?.property?.property_for == "sale");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+
+    // This API calls all the requested properties (For Rent) of an user by the user's email address. [by- Tanbir]
+    app.get("/requested-rent", async (req, res) => {
+      const email = req.query.email;
+      const query = { requesterEmail: email };
+      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      if (Requested_Properties) {
+        const result = Requested_Properties.filter((item) => item?.property?.property_for == "rent");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+
+    //This API calls the rent & sale request of an owner by konika
+
+    app.get("/ownerRentReq", async (req, res) => {
+      const email = req.query.email;
+      const query = { "property.owner_details.owner_email": email };
+      const ownerProperties = await Requested_PropertiesCollection.find(query).toArray();
+      if (ownerProperties) {
+        const result = ownerProperties.filter((item) => item?.property?.property_for == "rent");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+    app.get("/ownerSaleReq", async (req, res) => {
+      const email = req.query.email;
+      const query = { "property.owner_details.owner_email": email };
+      const ownerSaleProperties = await Requested_PropertiesCollection.find(query).toArray();
+      if (ownerSaleProperties) {
+        const result = ownerSaleProperties.filter((item) => item?.property?.property_for == "sale");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+
+
+    app.put('/accept/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
+      res.send(result)
+    })
+    
+    app.put('/reject/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
+      res.send(result)
+    })
+
+    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    app.get("/rentOut", async (req, res) => {
+      const email = req.query.email;
+      const query = {owner: email};
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter((item) => item?.property_status == "Rented");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+    app.get("/soldOut", async (req, res) => {
+      const email = req.query.email;
+      const query = {owner: email};
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter((item) => item?.property_status == "Sold");
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+
+
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
@@ -96,7 +215,7 @@ async function run() {
     //   }
     // });
 
-    //coded by Fahima
+  
 
 
 
@@ -128,8 +247,12 @@ async function run() {
       }
     });
 
+
+      //coded by Fahima 
     //for users
 //avoids multiple entry of same email
+
+    //for users API created by Fahima
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -166,7 +289,16 @@ async function run() {
       console.log('payment info', paymentResult);
       const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
-      res.send({ paymentResult, deleteRes });
+
+      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      const filter = { _id: new ObjectId(payment.propertyId) };
+      const updateDoc = {
+        $set: {
+          'property_info.property_details.property_status': payment.property_status
+        },
+      };
+      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+      res.send({ paymentResult, deleteRes, patchRes });
     });
 
     //change user role to owner
