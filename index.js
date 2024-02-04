@@ -33,6 +33,7 @@ async function run() {
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const userCollection = client.db("RentifyDB").collection("users");
     const blogCollection = client.db("RentifyDB").collection("blogs");
+    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -224,6 +225,8 @@ async function run() {
       res.send({ paymentResult, deleteRes });
     });
 
+
+    // blogs api creat & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
       const result = await blogCollection.insertOne(newBlog)
@@ -235,6 +238,17 @@ async function run() {
       res.send(result)
     })
 
+    // blogs comment creat & codded by sojib
+    app.post("/comments", async (req, res) => {
+      const newComment = req.body;
+      const result = await blogsCommentCollection.insertOne(newComment)
+      res.send(result)
+    })
+
+    app.get("/comments", async (req, res) => {
+      const result = await blogsCommentCollection.find().toArray();
+      res.send(result)
+    })
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
