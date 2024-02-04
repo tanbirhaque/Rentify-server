@@ -32,6 +32,7 @@ async function run() {
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const userCollection = client.db("RentifyDB").collection("users");
+    const blogCollection = client.db("RentifyDB").collection("blogs");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -119,25 +120,29 @@ async function run() {
       }
     });
 
-    app.put('/accept/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"accepted"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/accept/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    app.put('/reject/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"rejected"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/reject/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    
+
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
@@ -218,6 +223,17 @@ async function run() {
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
       res.send({ paymentResult, deleteRes });
     });
+
+    app.post("/blogs", async (req, res) => {
+      const newBlog = req.body;
+      const result = await blogCollection.insertOne(newBlog)
+      res.send(result)
+    })
+
+    app.get("/blogs", async (req, res) => {
+      const result = await blogCollection.find().toArray()
+      res.send(result)
+    })
 
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
