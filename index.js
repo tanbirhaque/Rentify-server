@@ -10,7 +10,8 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri = "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
+const uri =
+  "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -34,6 +35,7 @@ async function run() {
       .db("RentifyDB")
       .collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
+    const reviewCollection = client.db("RentifyDB").collection("reviews");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -67,9 +69,13 @@ async function run() {
     app.get("/requested-sale", async (req, res) => {
       const email = req.query.email;
       const query = { requesterEmail: email };
-      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      const Requested_Properties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (Requested_Properties) {
-        const result = Requested_Properties.filter((item) => item?.property?.property_for == "sale");
+        const result = Requested_Properties.filter(
+          (item) => item?.property?.property_for == "sale"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -80,9 +86,13 @@ async function run() {
     app.get("/requested-rent", async (req, res) => {
       const email = req.query.email;
       const query = { requesterEmail: email };
-      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      const Requested_Properties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (Requested_Properties) {
-        const result = Requested_Properties.filter((item) => item?.property?.property_for == "rent");
+        const result = Requested_Properties.filter(
+          (item) => item?.property?.property_for == "rent"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -94,9 +104,13 @@ async function run() {
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
-      const ownerProperties = await Requested_PropertiesCollection.find(query).toArray();
+      const ownerProperties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (ownerProperties) {
-        const result = ownerProperties.filter((item) => item?.property?.property_for == "rent");
+        const result = ownerProperties.filter(
+          (item) => item?.property?.property_for == "rent"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -105,49 +119,60 @@ async function run() {
     app.get("/ownerSaleReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
-      const ownerSaleProperties = await Requested_PropertiesCollection.find(query).toArray();
+      const ownerSaleProperties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (ownerSaleProperties) {
-        const result = ownerSaleProperties.filter((item) => item?.property?.property_for == "sale");
+        const result = ownerSaleProperties.filter(
+          (item) => item?.property?.property_for == "sale"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
 
+    app.put("/accept/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted",
+        },
+      };
+      const result = await Requested_PropertiesCollection.updateOne(
+        query,
+        updateStatus
+      );
+      res.send(result);
+    });
 
-    app.put('/accept/:id', async (req, res) => {
+    app.put("/reject/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
+      const query = { _id: new ObjectId(id) };
       const updateStatus = {
         $set: {
-          requestStatus: "accepted"
-        }
-      }
-      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
-      res.send(result)
-    })
-    
-    app.put('/reject/:id', async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
-      const updateStatus = {
-        $set: {
-          requestStatus: "rejected"
-        }
-      }
-      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
-      res.send(result)
-    })
+          requestStatus: "rejected",
+        },
+      };
+      const result = await Requested_PropertiesCollection.updateOne(
+        query,
+        updateStatus
+      );
+      res.send(result);
+    });
 
     //this Api call the rentOutProperties and SoldProperties of an owner by konika
     app.get("/rentOut", async (req, res) => {
       const email = req.query.email;
-      const query = {owner: email};
+      const query = { owner: email };
       console.log(query);
       const rentOutProperties = await paymentCollection.find(query).toArray();
       // console.log(rentOutProperties);
       if (rentOutProperties) {
-        const result = rentOutProperties.filter((item) => item?.property_status == "Rented");
+        const result = rentOutProperties.filter(
+          (item) => item?.property_status == "Rented"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -155,18 +180,19 @@ async function run() {
     });
     app.get("/soldOut", async (req, res) => {
       const email = req.query.email;
-      const query = {owner: email};
+      const query = { owner: email };
       console.log(query);
       const rentOutProperties = await paymentCollection.find(query).toArray();
       // console.log(rentOutProperties);
       if (rentOutProperties) {
-        const result = rentOutProperties.filter((item) => item?.property_status == "Sold");
+        const result = rentOutProperties.filter(
+          (item) => item?.property_status == "Sold"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
-
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
@@ -215,10 +241,6 @@ async function run() {
     //   }
     // });
 
-  
-
-
-
     // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
     //to save property data to backend
     // app.get("/saved-properties", async (req, res) => {
@@ -247,10 +269,9 @@ async function run() {
       }
     });
 
-
-      //coded by Fahima 
+    //coded by Fahima
     //for users
-//avoids multiple entry of same email
+    //avoids multiple entry of same email
 
     //for users API created by Fahima
     app.post("/users", async (req, res) => {
@@ -263,42 +284,10 @@ async function run() {
       const result = await userCollection.insertOne(user);
       res.send(result);
     });
-    
+
     app.get("/users", async (req, res) => {
       const result = await userCollection.find().toArray();
       res.send(result);
-    });
-    // payment intent api by Rana
-    app.post("/create-payment-intent", async (req, res) => {
-      const { price } = req.body;
-      const amount = parseInt(price * 100);
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: 'usd',
-        payment_method_types: ['card']
-      });
-      res.send({
-        clientSecret: paymentIntent.client_secret
-      })
-    });
-
-    app.post("/payments", async (req, res) => {
-      const payment = req.body;
-      const paymentResult = await paymentCollection.insertOne(payment);
-      console.log('payment info', paymentResult);
-      const query = { _id: new ObjectId(payment.requestId) };
-      const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
-
-      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
-      const filter = { _id: new ObjectId(payment.propertyId) };
-      const updateDoc = {
-        $set: {
-          'property_info.property_details.property_status': payment.property_status
-        },
-      };
-      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
-      res.send({ paymentResult, deleteRes, patchRes });
     });
 
     //change user role to owner
@@ -314,8 +303,56 @@ async function run() {
       res.send(result);
     });
 
-    
+    //reviews
+
+    //posting
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
+    //getting
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewCollection.find().toArray();
+res.send(result)
+    });
+
     //code by "Fahima"
+
+    // payment intent api by Rana
+    app.post("/create-payment-intent", async (req, res) => {
+      const { price } = req.body;
+      const amount = parseInt(price * 100);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "usd",
+        payment_method_types: ["card"],
+      });
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+
+    app.post("/payments", async (req, res) => {
+      const payment = req.body;
+      const paymentResult = await paymentCollection.insertOne(payment);
+      console.log("payment info", paymentResult);
+      const query = { _id: new ObjectId(payment.requestId) };
+      const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
+
+      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      const filter = { _id: new ObjectId(payment.propertyId) };
+      const updateDoc = {
+        $set: {
+          "property_info.property_details.property_status":
+            payment.property_status,
+        },
+      };
+      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+      res.send({ paymentResult, deleteRes, patchRes });
+    });
 
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
@@ -342,7 +379,7 @@ async function run() {
     });
 
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
