@@ -155,12 +155,12 @@ async function run() {
     });
 
     //coded by Fahima
-
+    // this api has been commented by sojib to solve some conflicts please don't uncomment this api 
     //to save property data to backend
-    app.get("/saved-properties", async (req, res) => {
-      const result = await Saved_PropertiesCollection.find().toArray();
-      res.send(result);
-    });
+    // app.get("/saved-properties", async (req, res) => {
+    //   const result = await Saved_PropertiesCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
@@ -249,6 +249,7 @@ async function run() {
       const result = await blogsCommentCollection.find().toArray();
       res.send(result)
     })
+    
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
