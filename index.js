@@ -28,13 +28,10 @@ async function run() {
   try {
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
-    const Requested_PropertiesCollection = client
-      .db("RentifyDB")
-      .collection("Requested_Properties");
-    const Saved_PropertiesCollection = client
-      .db("RentifyDB")
-      .collection("Saved_Properties");
+    const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
+    const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
+    const paymentCollection = client.db("RentifyDB").collection("payment");
     const blogCollection = client.db("RentifyDB").collection("blogs");
     const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
@@ -245,9 +242,7 @@ async function run() {
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
-      const result = await Saved_PropertiesCollection.insertOne(
-        savedProperties
-      );
+      const result = await Saved_PropertiesCollection.insertOne(savedProperties);
       res.send(result);
     });
 
@@ -310,7 +305,7 @@ async function run() {
     //getting
     app.get("/reviews", async (req, res) => {
       const result = await reviewCollection.find().toArray();
-res.send(result)
+      res.send(result)
     });
 
     //code by "Fahima"
@@ -347,30 +342,6 @@ res.send(result)
       };
       const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
       res.send({ paymentResult, deleteRes, patchRes });
-    });
-
-    // payment intent api by Rana
-    app.post("/create-payment-intent", async (req, res) => {
-      const { price } = req.body;
-      const amount = parseInt(price * 100);
-
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: "usd",
-        payment_method_types: ["card"],
-      });
-      res.send({
-        clientSecret: paymentIntent.client_secret,
-      });
-    });
-
-    app.post("/payments", async (req, res) => {
-      const payment = req.body;
-      const paymentResult = await paymentCollection.insertOne(payment);
-      console.log("payment info", paymentResult);
-      const query = { _id: new ObjectId(payment.requestId) };
-      const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
-      res.send({ paymentResult, deleteRes });
     });
 
     // blogs api creat & codded by sojib
