@@ -35,6 +35,8 @@ async function run() {
       .db("RentifyDB")
       .collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
+    const blogCollection = client.db("RentifyDB").collection("blogs");
+    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
 
     // data get by Sojib
@@ -132,35 +134,28 @@ async function run() {
       }
     });
 
-    app.put("/accept/:id", async (req, res) => {
+    app.put('/accept/:id', async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
+      const query = { _id: new ObjectId(id) }
       const updateStatus = {
         $set: {
-          requestStatus: "accepted",
-        },
-      };
-      const result = await Requested_PropertiesCollection.updateOne(
-        query,
-        updateStatus
-      );
-      res.send(result);
-    });
-
-    app.put("/reject/:id", async (req, res) => {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
+      res.send(result)
+    })
+    app.put('/reject/:id', async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
+      const query = { _id: new ObjectId(id) }
       const updateStatus = {
         $set: {
-          requestStatus: "rejected",
-        },
-      };
-      const result = await Requested_PropertiesCollection.updateOne(
-        query,
-        updateStatus
-      );
-      res.send(result);
-    });
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
+      res.send(result)
+    })
 
     //this Api call the rentOutProperties and SoldProperties of an owner by konika
     app.get("/rentOut", async (req, res) => {
@@ -377,6 +372,31 @@ res.send(result)
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
       res.send({ paymentResult, deleteRes });
     });
+
+    // blogs api creat & codded by sojib
+    app.post("/blogs", async (req, res) => {
+      const newBlog = req.body;
+      const result = await blogCollection.insertOne(newBlog)
+      res.send(result)
+    })
+
+    app.get("/blogs", async (req, res) => {
+      const result = await blogCollection.find().toArray()
+      res.send(result)
+    })
+
+    // blogs comment creat & codded by sojib
+    app.post("/comments", async (req, res) => {
+      const newComment = req.body;
+      const result = await blogsCommentCollection.insertOne(newComment)
+      res.send(result)
+    })
+
+    app.get("/comments", async (req, res) => {
+      const result = await blogsCommentCollection.find().toArray();
+      res.send(result)
+    })
+
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
