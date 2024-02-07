@@ -296,11 +296,18 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const roleChange = {
         $set: {
-          role: "owner",
+          role: "Owner",
         },
       };
       const result = await userCollection.updateOne(filter, roleChange);
       res.send(result);
+    });
+
+    //get single user
+    app.get("/users/:email", async (req, res) => {
+      const email = req.params.email;
+      const user = await userCollection.findOne({ email });
+      res.send(user);
     });
 
     //reviews
