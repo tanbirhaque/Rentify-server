@@ -418,6 +418,13 @@ async function run() {
     });
 
     //delete comment added by "Fahima"
+    app.delete("/comments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogsCommentCollection.deleteOne(filter);
+      res.send(result);
+    });
+
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
