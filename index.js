@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const stripe = require('stripe')('sk_test_51OHt7bH9TPzhm8dE66bT3iPfXwM7PkMVIQOV9oY6shFfWcz14y7iTmRbgFXXv0kevpLgN8pk4hbWjJIF2tut9NRl00pH4ykAY6'); //for payment by Rana;
+const stripe = require('stripe')('sk_test_51OHt7bH9TPzhm8dE66bT3iPfXwM7PkMVIQOV9oY6shFfWcz14y7iTmRbgFXXv0kevpLgN8pk4hbWjJIF2tut9NRl00pH4ykAY6');
 const port = process.env.PORT || 5000;
 
 // comment update
@@ -11,7 +11,8 @@ app.use(cors());
 app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri = "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
+const uri =
+  "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -30,21 +31,17 @@ async function run() {
     const PropertyCollection = client.db("RentifyDB").collection("Property");
     const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
-    const paymentCollection = client.db("RentifyDB").collection("payments");
     const userCollection = client.db("RentifyDB").collection("users");
+    const paymentCollection = client.db("RentifyDB").collection("payments");
+    const blogCollection = client.db("RentifyDB").collection("blogs");
+    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
+    const reviewCollection = client.db("RentifyDB").collection("reviews");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
     });
-
-    // This is the API for adding properties [by- sojib] 
-    app.post("/properties", async (req, res) => {
-      const newProperty = req.body;
-      const result = await PropertyCollection.insertOne(newProperty)
-      res.send(result)
-    })
 
     //single property data
     app.get("/properties/:id", async (req, res) => {
@@ -72,9 +69,13 @@ async function run() {
     app.get("/requested-sale", async (req, res) => {
       const email = req.query.email;
       const query = { requesterEmail: email };
-      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      const Requested_Properties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (Requested_Properties) {
-        const result = Requested_Properties.filter((item) => item?.property?.property_for == "sale");
+        const result = Requested_Properties.filter(
+          (item) => item?.property?.property_for == "sale"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -85,23 +86,31 @@ async function run() {
     app.get("/requested-rent", async (req, res) => {
       const email = req.query.email;
       const query = { requesterEmail: email };
-      const Requested_Properties = await Requested_PropertiesCollection.find(query).toArray();
+      const Requested_Properties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (Requested_Properties) {
-        const result = Requested_Properties.filter((item) => item?.property?.property_for == "rent");
+        const result = Requested_Properties.filter(
+          (item) => item?.property?.property_for == "rent"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
 
-    //This API calls the rent request of an owner by konika
+    //This API calls the rent & sale request of an owner by konika
 
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
-      const ownerProperties = await Requested_PropertiesCollection.find(query).toArray();
+      const ownerProperties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (ownerProperties) {
-        const result = ownerProperties.filter((item) => item?.property?.property_for == "rent");
+        const result = ownerProperties.filter(
+          (item) => item?.property?.property_for == "rent"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
@@ -110,34 +119,73 @@ async function run() {
     app.get("/ownerSaleReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
-      const ownerSaleProperties = await Requested_PropertiesCollection.find(query).toArray();
+      const ownerSaleProperties = await Requested_PropertiesCollection.find(
+        query
+      ).toArray();
       if (ownerSaleProperties) {
-        const result = ownerSaleProperties.filter((item) => item?.property?.property_for == "sale");
+        const result = ownerSaleProperties.filter(
+          (item) => item?.property?.property_for == "sale"
+        );
         res.send(result);
       } else {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
 
-    app.put('/accept/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"accepted"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/accept/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "accepted"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    app.put('/reject/:id', async(req,res)=>{
-      const id =req.params.id;
-      const query ={_id: new ObjectId(id)}
-      const updateStatus ={$set:{
-        requestStatus:"rejected"
-      }}
-      const result =await Requested_PropertiesCollection.updateOne(query ,updateStatus)
+    app.put('/reject/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const updateStatus = {
+        $set: {
+          requestStatus: "rejected"
+        }
+      }
+      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
-    
+
+    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    app.get("/rentOut", async (req, res) => {
+      const email = req.query.email;
+      const query = { owner: email };
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter(
+          (item) => item?.property_status == "Rented"
+        );
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
+    app.get("/soldOut", async (req, res) => {
+      const email = req.query.email;
+      const query = { owner: email };
+      console.log(query);
+      const rentOutProperties = await paymentCollection.find(query).toArray();
+      // console.log(rentOutProperties);
+      if (rentOutProperties) {
+        const result = rentOutProperties.filter(
+          (item) => item?.property_status == "Sold"
+        );
+        res.send(result);
+      } else {
+        return res.status(401).send({ message: "unauthorized access" });
+      }
+    });
 
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
@@ -148,29 +196,58 @@ async function run() {
       res.send(result);
     });
 
-    //coded by Fahima
-
-    //to save property data to backend
-    app.get("/saved-properties", async (req, res) => {
-      const result = await Saved_PropertiesCollection.find().toArray();
+    // Request property data individually get by Sojib
+    app.get("/requested-properties", async (req, res) => {
+      const result = await Requested_PropertiesCollection.find().toArray();
       res.send(result);
     });
 
-    app.post("/saved-properties", async (req, res) => {
-      const savedProperties = req.body;
-      const result = await Saved_PropertiesCollection.insertOne(
-        savedProperties
-      );
-      res.send(result);
-    });
-
-    // app.get("/saved-properties", async (req, res) => {
+    // app.get("/requested-sale", async (req, res) => {
     //   const email = req.query.email;
-    //   const query = { email: email };
-    //   const result = await Saved_PropertiesCollection.find(query).toArray();
+    //   const query = { requesterEmail: email };
+    //   const Requested_Properties = await Requested_PropertiesCollection.find(
+    //     query
+    //   ).toArray();
+    //   if (Requested_Properties) {
+    //     const result = Requested_Properties.filter(
+    //       (item) => item?.property?.property_for === "sale"
+    //     );
+    //     res.send(result);
+    //   } else {
+    //     return res.status(401).send({ message: "unauthorized access" });
+    //   }
+    // });
+
+    // app.get("/requested-rent", async (req, res) => {
+    //   const email = req.query.email;
+    //   const query = { requesterEmail: email };
+    //   const Requested_Properties = await Requested_PropertiesCollection.find(
+    //     query
+    //   ).toArray();
+    //   if (Requested_Properties) {
+    //     const result = Requested_Properties.filter(
+    //       (item) => item?.property?.property_for === "rent"
+    //     );
+    //     res.send(result);
+    //   } else {
+    //     return res.status(401).send({ message: "unauthorized access" });
+    //   }
+    // });
+
+    // This API is for getting all the saved properties from the saved properties collection - Please don't remove the comment and the code below - By Tanbir
+    //to save property data to backend
+    // app.get("/saved-properties", async (req, res) => {
+    //   const result = await Saved_PropertiesCollection.find().toArray();
     //   res.send(result);
     // });
 
+    app.post("/saved-properties", async (req, res) => {
+      const savedProperties = req.body;
+      const result = await Saved_PropertiesCollection.insertOne(savedProperties);
+      res.send(result);
+    });
+
+    // This Api Is for getting saved properties for individual users. By Email query
     app.get("/saved-properties", async (req, res) => {
       try {
         const userEmail = req.query.email;
@@ -183,11 +260,19 @@ async function run() {
       }
     });
 
+    //coded by Fahima
     //for users
+    //avoids multiple entry of same email
 
+    //for users API created by Fahima
     app.post("/users", async (req, res) => {
-      const users = req.body;
-      const result = await userCollection.insertOne(users);
+      const user = req.body;
+      const query = { email: user.email };
+      const userExist = await userCollection.findOne(query);
+      if (userExist) {
+        return res.send({ insertedId: null });
+      }
+      const result = await userCollection.insertOne(user);
       res.send(result);
     });
 
@@ -195,6 +280,37 @@ async function run() {
       const result = await userCollection.find().toArray();
       res.send(result);
     });
+
+    //change user role to owner
+    app.patch("/users/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const roleChange = {
+        $set: {
+          role: "owner",
+        },
+      };
+      const result = await userCollection.updateOne(filter, roleChange);
+      res.send(result);
+    });
+
+    //reviews
+
+    //posting
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
+    });
+
+    //getting
+    app.get("/reviews", async (req, res) => {
+      const result = await reviewCollection.find().toArray();
+      res.send(result)
+    });
+
+    //code by "Fahima"
+
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
@@ -202,26 +318,60 @@ async function run() {
 
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
-        currency: 'usd',
-        payment_method_types: ['card']
+        currency: "usd",
+        payment_method_types: ["card"],
       });
       res.send({
-        clientSecret: paymentIntent.client_secret
-      })
+        clientSecret: paymentIntent.client_secret,
+      });
     });
 
     app.post("/payments", async (req, res) => {
       const payment = req.body;
       const paymentResult = await paymentCollection.insertOne(payment);
-      console.log('payment info', paymentResult);
+      console.log("payment info", paymentResult);
       const query = { _id: new ObjectId(payment.requestId) };
-      const deleteRes = await Requested_PropertiesCollection.deleteOne(query)
-      res.send({ paymentResult, deleteRes });
+      const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
+
+      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      const filter = { _id: new ObjectId(payment.propertyId) };
+      const updateDoc = {
+        $set: {
+          "property_info.property_details.property_status":
+            payment.property_status,
+        },
+      };
+      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+      res.send({ paymentResult, deleteRes, patchRes });
     });
 
-    //code by Fahima
+    // blogs api creat & codded by sojib
+    app.post("/blogs", async (req, res) => {
+      const newBlog = req.body;
+      const result = await blogCollection.insertOne(newBlog)
+      res.send(result)
+    })
+
+    app.get("/blogs", async (req, res) => {
+      const result = await blogCollection.find().toArray()
+      res.send(result)
+    })
+
+    // blogs comment creat & codded by sojib
+    app.post("/comments", async (req, res) => {
+      const newComment = req.body;
+      const result = await blogsCommentCollection.insertOne(newComment)
+      res.send(result)
+    })
+
+    app.get("/comments", async (req, res) => {
+      const result = await blogsCommentCollection.find().toArray();
+      res.send(result)
+    })
+
+
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -232,6 +382,7 @@ async function run() {
     // await client.close();
   }
 }
+
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
