@@ -2,7 +2,9 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 require("dotenv").config();
-const stripe = require('stripe')('sk_test_51OHt7bH9TPzhm8dE66bT3iPfXwM7PkMVIQOV9oY6shFfWcz14y7iTmRbgFXXv0kevpLgN8pk4hbWjJIF2tut9NRl00pH4ykAY6');
+const stripe = require("stripe")(
+  "sk_test_51OHt7bH9TPzhm8dE66bT3iPfXwM7PkMVIQOV9oY6shFfWcz14y7iTmRbgFXXv0kevpLgN8pk4hbWjJIF2tut9NRl00pH4ykAY6"
+);
 const port = process.env.PORT || 5000;
 
 // comment update
@@ -29,12 +31,18 @@ async function run() {
   try {
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
-    const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
-    const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
+    const Requested_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Requested_Properties");
+    const Saved_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const blogCollection = client.db("RentifyDB").collection("blogs");
-    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
+    const blogsCommentCollection = client
+      .db("RentifyDB")
+      .collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
@@ -133,28 +141,34 @@ async function run() {
       }
     });
 
-    app.put('/accept/:id', async (req, res) => {
+    app.put("/accept/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
+      const query = { _id: new ObjectId(id) };
       const updateStatus = {
         $set: {
-          requestStatus: "accepted"
-        }
-      }
-      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
-      res.send(result)
-    })
-    app.put('/reject/:id', async (req, res) => {
+          requestStatus: "accepted",
+        },
+      };
+      const result = await Requested_PropertiesCollection.updateOne(
+        query,
+        updateStatus
+      );
+      res.send(result);
+    });
+    app.put("/reject/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: new ObjectId(id) }
+      const query = { _id: new ObjectId(id) };
       const updateStatus = {
         $set: {
-          requestStatus: "rejected"
-        }
-      }
-      const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
-      res.send(result)
-    })
+          requestStatus: "rejected",
+        },
+      };
+      const result = await Requested_PropertiesCollection.updateOne(
+        query,
+        updateStatus
+      );
+      res.send(result);
+    });
 
     //this Api call the rentOutProperties and SoldProperties of an owner by konika
     app.get("/rentOut", async (req, res) => {
@@ -244,7 +258,9 @@ async function run() {
 
     app.post("/saved-properties", async (req, res) => {
       const savedProperties = req.body;
-      const result = await Saved_PropertiesCollection.insertOne(savedProperties);
+      const result = await Saved_PropertiesCollection.insertOne(
+        savedProperties
+      );
       res.send(result);
     });
 
@@ -316,6 +332,14 @@ async function run() {
       res.send(result);
     });
 
+    //review delete
+    app.delete("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await reviewCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     //ownerRequest
     //for avoiding multiple request with same email
     app.post("/ownerRequest", async (req, res) => {
@@ -372,27 +396,28 @@ async function run() {
     // blogs api creat & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
-      const result = await blogCollection.insertOne(newBlog)
-      res.send(result)
-    })
+      const result = await blogCollection.insertOne(newBlog);
+      res.send(result);
+    });
 
     app.get("/blogs", async (req, res) => {
-      const result = await blogCollection.find().toArray()
-      res.send(result)
-    })
+      const result = await blogCollection.find().toArray();
+      res.send(result);
+    });
 
     // blogs comment creat & codded by sojib
     app.post("/comments", async (req, res) => {
       const newComment = req.body;
-      const result = await blogsCommentCollection.insertOne(newComment)
-      res.send(result)
-    })
+      const result = await blogsCommentCollection.insertOne(newComment);
+      res.send(result);
+    });
 
     app.get("/comments", async (req, res) => {
       const result = await blogsCommentCollection.find().toArray();
-      res.send(result)
-    })
+      res.send(result);
+    });
 
+    //delete comment added by "Fahima"
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
