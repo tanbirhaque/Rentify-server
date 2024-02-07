@@ -32,7 +32,7 @@ async function run() {
     const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
     const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
-    const paymentCollection = client.db("RentifyDB").collection("payment");
+    const paymentCollection = client.db("RentifyDB").collection("payments");
     const blogCollection = client.db("RentifyDB").collection("blogs");
     const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
