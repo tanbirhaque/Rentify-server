@@ -36,6 +36,7 @@ async function run() {
       .collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
+    const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
     // data get by Sojib
     app.get("/properties", async (req, res) => {
@@ -271,9 +272,8 @@ async function run() {
 
     //coded by Fahima
     //for users
-    //avoids multiple entry of same email
-
     //for users API created by Fahima
+    //avoids multiple entry of same email
     app.post("/users", async (req, res) => {
       const user = req.body;
       const query = { email: user.email };
@@ -315,11 +315,28 @@ async function run() {
     //getting
     app.get("/reviews", async (req, res) => {
       const result = await reviewCollection.find().toArray();
-res.send(result)
+      res.send(result);
+    });
+
+    //ownerRequest
+    //for avoiding multiple request with same email
+    app.post("/ownerRequest", async (req, res) => {
+      const owner = req.body;
+      const query = { ownerEmail: owner.ownerEmail };
+      const ownerRequestExist = await ownerCollection.findOne(query);
+      if (ownerRequestExist) {
+        return res.send({ insertedId: null });
+      }
+      const result = await ownerCollection.insertOne(owner);
+      res.send(result);
+    });
+
+    app.get("/ownerRequest", async (req, res) => {
+      const result = await ownerCollection.find().toArray();
+      res.send(result);
     });
 
     //code by "Fahima"
-
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
