@@ -377,7 +377,6 @@ async function run() {
     app.post("/payments", async (req, res) => {
       const payment = req.body;
       const paymentResult = await paymentCollection.insertOne(payment);
-      console.log("payment info", paymentResult);
       const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
 
@@ -448,3 +447,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Rentify server is running on port ${port}`);
 });
+#git merge problem
