@@ -40,7 +40,15 @@ async function run() {
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // data get by Sojib
+
+    // properties data post api creat by Sojib
+    app.post("/properties", async (req, res) => {
+      const newProperties = req.body;
+      const result = await PropertyCollection.insertOne(newProperties)
+      res.send(result)
+    })
+
+    // properties data get api creat by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
@@ -386,13 +394,14 @@ async function run() {
       res.send({ paymentResult, deleteRes, patchRes });
     });
 
-    // blogs api creat & codded by sojib
+    // blogs post api creat & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
       const result = await blogCollection.insertOne(newBlog);
       res.send(result);
     });
 
+    // blogs get api creat & codded by sojib
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
       res.send(result);
@@ -409,7 +418,15 @@ async function run() {
       const result = await blogsCommentCollection.find().toArray();
       res.send(result)
     })
-    
+
+    //delete comment added by "Fahima"
+    app.delete("/comments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogsCommentCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
