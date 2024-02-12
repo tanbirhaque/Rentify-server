@@ -31,22 +31,24 @@ async function run() {
   try {
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
-    const Requested_PropertiesCollection = client
-      .db("RentifyDB")
-      .collection("Requested_Properties");
-    const Saved_PropertiesCollection = client
-      .db("RentifyDB")
-      .collection("Saved_Properties");
+    const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
+    const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const blogCollection = client.db("RentifyDB").collection("blogs");
-    const blogsCommentCollection = client
-      .db("RentifyDB")
-      .collection("blogsComment");
+    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // data get by Sojib
+
+    // properties data post api creat by Sojib
+    app.post("/properties", async (req, res) => {
+      const newProperties = req.body;
+      const result = await PropertyCollection.insertOne(newProperties)
+      res.send(result)
+    })
+
+    // properties data get api creat by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
@@ -392,13 +394,14 @@ async function run() {
       res.send({ paymentResult, deleteRes, patchRes });
     });
 
-    // blogs api creat & codded by sojib
+    // blogs post api creat & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
       const result = await blogCollection.insertOne(newBlog);
       res.send(result);
     });
 
+    // blogs get api creat & codded by sojib
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
       res.send(result);
@@ -413,8 +416,8 @@ async function run() {
 
     app.get("/comments", async (req, res) => {
       const result = await blogsCommentCollection.find().toArray();
-      res.send(result);
-    });
+      res.send(result)
+    })
 
     //delete comment added by "Fahima"
     app.delete("/comments/:id", async (req, res) => {
@@ -424,7 +427,7 @@ async function run() {
       res.send(result);
     });
 
-
+    //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
@@ -447,4 +450,3 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Rentify server is running on port ${port}`);
 });
-#git merge problem
