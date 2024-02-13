@@ -31,22 +31,27 @@ async function run() {
   try {
     //coded by Sojib
     const PropertyCollection = client.db("RentifyDB").collection("Property");
-    const Requested_PropertiesCollection = client.db("RentifyDB").collection("Requested_Properties");
-    const Saved_PropertiesCollection = client.db("RentifyDB").collection("Saved_Properties");
+    const Requested_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Requested_Properties");
+    const Saved_PropertiesCollection = client
+      .db("RentifyDB")
+      .collection("Saved_Properties");
     const userCollection = client.db("RentifyDB").collection("users");
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const blogCollection = client.db("RentifyDB").collection("blogs");
-    const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
+    const blogsCommentCollection = client
+      .db("RentifyDB")
+      .collection("blogsComment");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
-
 
     // properties data post api creat by Sojib
     app.post("/properties", async (req, res) => {
       const newProperties = req.body;
-      const result = await PropertyCollection.insertOne(newProperties)
-      res.send(result)
-    })
+      const result = await PropertyCollection.insertOne(newProperties);
+      res.send(result);
+    });
 
     // properties data get api creat by Sojib
     app.get("/properties", async (req, res) => {
@@ -110,7 +115,7 @@ async function run() {
       }
     });
 
-    //This API calls the rent & sale request of an owner by konika
+    //This API calls the rent request of an owner by konika
 
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
@@ -127,6 +132,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //This API calls the  sale request of an owner by konika
     app.get("/ownerSaleReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
@@ -172,7 +178,7 @@ async function run() {
       res.send(result);
     });
 
-    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    //this Api call the rentOutProperties  of an owner by konika
     app.get("/rentOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
@@ -188,6 +194,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //this Api call the  SoldProperties of an owner by konika
     app.get("/soldOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
@@ -203,7 +210,12 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
-
+    app.get("/recentAddProperties", async (req, res) => {
+      const email = req.query.email;
+      const query = { "property_info.owner_details.owner_email": email };
+      const ownerProperties = await PropertyCollection.find(query).toArray();
+      res.send(ownerProperties);
+    });
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
@@ -416,8 +428,8 @@ async function run() {
 
     app.get("/comments", async (req, res) => {
       const result = await blogsCommentCollection.find().toArray();
-      res.send(result)
-    })
+      res.send(result);
+    });
 
     //delete comment added by "Fahima"
     app.delete("/comments/:id", async (req, res) => {
