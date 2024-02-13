@@ -464,21 +464,20 @@ async function run() {
     });
 
     
+        //patch for properties to verified
+        app.patch("/verification", async (req, res) => {
+          const id = req.body.id;
+          const query = { _id: new ObjectId(id) };
+          const status = req.body.propertyStatus;
+          const statusChange = {
+            $set: {
+              "property_info.verify_status": status,
+            },
+          };
+          const result = await PropertyCollection.updateOne(query, statusChange);
+          res.send(result);
+        });
 
-
-    //patch for properties to verified
-    app.patch("/verification", async (req, res) => {
-      const id = req.body.id;
-      const query = { _id: new ObjectId(id) };
-      const status = req.body.propertyStatus;
-      const statusChange = {
-        $set: {
-          "property_info.verify_status": status,
-        },
-      };
-      const result = await PropertyCollection.updateOne(query, statusChange);
-      res.send(result);
-    });
 
     //code by Fahima
 
