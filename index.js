@@ -46,7 +46,14 @@ async function run() {
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // data get by Sojib
+    // properties data post api creat by Sojib
+    app.post("/properties", async (req, res) => {
+      const newProperties = req.body;
+      const result = await PropertyCollection.insertOne(newProperties);
+      res.send(result);
+    });
+
+    // properties data get api creat by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
@@ -110,7 +117,7 @@ async function run() {
       }
     });
 
-    //This API calls the rent & sale request of an owner by konika
+    //This API calls the rent request of an owner by konika
 
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
@@ -127,6 +134,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //This API calls the  sale request of an owner by konika
     app.get("/ownerSaleReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
@@ -173,7 +181,7 @@ async function run() {
       res.send(result);
     });
 
-    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    //this Api call the rentOutProperties  of an owner by konika
     app.get("/rentOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
@@ -189,6 +197,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //this Api call the  SoldProperties of an owner by konika
     app.get("/soldOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
@@ -204,7 +213,12 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
-
+    app.get("/recentAddProperties", async (req, res) => {
+      const email = req.query.email;
+      const query = { "property_info.owner_details.owner_email": email };
+      const ownerProperties = await PropertyCollection.find(query).toArray();
+      res.send(ownerProperties);
+    });
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
@@ -401,7 +415,6 @@ async function run() {
     app.post("/payments", async (req, res) => {
       const payment = req.body;
       const paymentResult = await paymentCollection.insertOne(payment);
-      console.log("payment info", paymentResult);
       const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
 
@@ -417,13 +430,14 @@ async function run() {
       res.send({ paymentResult, deleteRes, patchRes });
     });
 
-    // blogs api creat & codded by sojib
+    // blogs post api creat & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
       const result = await blogCollection.insertOne(newBlog);
       res.send(result);
     });
 
+    // blogs get api creat & codded by sojib
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
       res.send(result);
@@ -448,6 +462,25 @@ async function run() {
       const result = await blogsCommentCollection.deleteOne(filter);
       res.send(result);
     });
+
+    
+
+
+    //patch for properties to verified
+    app.patch("/verification", async (req, res) => {
+      const id = req.body.id;
+      const query = { _id: new ObjectId(id) };
+      const status = req.body.propertyStatus;
+      const statusChange = {
+        $set: {
+          "property_info.verify_status": status,
+        },
+      };
+      const result = await PropertyCollection.updateOne(query, statusChange);
+      res.send(result);
+    });
+
+    //code by Fahima
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
