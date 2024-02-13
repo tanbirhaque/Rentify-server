@@ -60,7 +60,9 @@ async function run() {
       res.send(result);
     });
 
-    // Request property data individually get by Sojib
+
+
+    // Request property data individually get by Sajib
     app.get("/requested-properties", async (req, res) => {
       const result = await Requested_PropertiesCollection.find().toArray();
       res.send(result);
@@ -155,6 +157,7 @@ async function run() {
       );
       res.send(result);
     });
+
     app.put("/reject/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -340,6 +343,14 @@ async function run() {
       res.send(result);
     });
 
+    //delete blog
+    app.delete("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     //ownerRequest
     //for avoiding multiple request with same email
     app.post("/ownerRequest", async (req, res) => {
@@ -357,6 +368,19 @@ async function run() {
       const result = await ownerCollection.find().toArray();
       res.send(result);
     });
+
+    //change user role to owner
+    // app.patch("/ownerRequest/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const statusChange = {
+    //     $set: {
+    //       status: "approved",
+    //     },
+    //   };
+    //   const result = await ownerCollection.updateOne(filter, statusChange);
+    //   res.send(result);
+    // });
 
     //code by "Fahima"
     // payment intent api by Rana
@@ -424,7 +448,6 @@ async function run() {
       const result = await blogsCommentCollection.deleteOne(filter);
       res.send(result);
     });
-
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
