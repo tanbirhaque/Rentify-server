@@ -100,7 +100,7 @@ async function run() {
       }
     });
 
-    //This API calls the rent & sale request of an owner by konika
+    //This API calls the rent request of an owner by konika
 
     app.get("/ownerRentReq", async (req, res) => {
       const email = req.query.email;
@@ -117,6 +117,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+    //This API calls the  sale request of an owner by konika
     app.get("/ownerSaleReq", async (req, res) => {
       const email = req.query.email;
       const query = { "property.owner_details.owner_email": email };
@@ -132,7 +133,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
-
+   //This API calls the  accept pending properties and change the status of an owner by konika
     app.put('/accept/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -144,6 +145,8 @@ async function run() {
       const result = await Requested_PropertiesCollection.updateOne(query, updateStatus)
       res.send(result)
     })
+       //This API calls the  reject pending properties and change the status of an owner by konika
+
     app.put('/reject/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) }
@@ -156,7 +159,7 @@ async function run() {
       res.send(result)
     })
 
-    //this Api call the rentOutProperties and SoldProperties of an owner by konika
+    //this Api call the rentOutProperties  of an owner by konika
     app.get("/rentOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
@@ -172,6 +175,7 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+     //this Api call the  SoldProperties of an owner by konika
     app.get("/soldOut", async (req, res) => {
       const email = req.query.email;
       const query = { owner: email };
