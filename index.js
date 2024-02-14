@@ -383,6 +383,30 @@ async function run() {
       res.send(result);
     });
 
+  //delete comment added by "Fahima"
+  app.delete("/comments/:id", async (req, res) => {
+    const id = req.params.id;
+    const filter = { _id: new ObjectId(id) };
+    const result = await blogsCommentCollection.deleteOne(filter);
+    res.send(result);
+  });
+
+  
+      //patch for properties to verified
+      app.patch("/verification", async (req, res) => {
+        const id = req.body.id;
+        const query = { _id: new ObjectId(id) };
+        const status = req.body.propertyStatus;
+        const statusChange = {
+          $set: {
+            "property_info.verify_status": status,
+          },
+        };
+        const result = await PropertyCollection.updateOne(query, statusChange);
+        res.send(result);
+      });
+
+
     //change user role to owner
     // app.patch("/ownerRequest/:id", async (req, res) => {
     //   const id = req.params.id;
@@ -396,7 +420,9 @@ async function run() {
     //   res.send(result);
     // });
 
-    //code by "Fahima"
+
+    // code by "Fahima"
+
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
@@ -455,31 +481,7 @@ async function run() {
       res.send(result);
     });
 
-    //delete comment added by "Fahima"
-    app.delete("/comments/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await blogsCommentCollection.deleteOne(filter);
-      res.send(result);
-    });
-
-    
-        //patch for properties to verified
-        app.patch("/verification", async (req, res) => {
-          const id = req.body.id;
-          const query = { _id: new ObjectId(id) };
-          const status = req.body.propertyStatus;
-          const statusChange = {
-            $set: {
-              "property_info.verify_status": status,
-            },
-          };
-          const result = await PropertyCollection.updateOne(query, statusChange);
-          res.send(result);
-        });
-
-
-    //code by Fahima
+  
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
