@@ -391,7 +391,6 @@ async function run() {
     res.send(result);
   });
 
-  
       //patch for properties to verified
       app.patch("/verification", async (req, res) => {
         const id = req.body.id;
