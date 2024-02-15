@@ -67,8 +67,6 @@ async function run() {
       res.send(result);
     });
 
-
-
     // Request property data individually get by Sajib
     app.get("/requested-properties", async (req, res) => {
       const result = await Requested_PropertiesCollection.find().toArray();
@@ -295,6 +293,7 @@ async function run() {
     });
 
     //coded by Fahima
+
     //for users
     //for users API created by Fahima
     //avoids multiple entry of same email
@@ -315,17 +314,17 @@ async function run() {
     });
 
     //change user role to owner
-    app.patch("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const roleChange = {
-        $set: {
-          role: "Owner",
-        },
-      };
-      const result = await userCollection.updateOne(filter, roleChange);
-      res.send(result);
-    });
+    // app.patch("/users/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const roleChange = {
+    //     $set: {
+    //       role: "Owner",
+    //     },
+    //   };
+    //   const result = await userCollection.updateOne(filter, roleChange);
+    //   res.send(result);
+    // });
 
     //get single user
     app.get("/users/:email", async (req, res) => {
@@ -334,7 +333,7 @@ async function run() {
       res.send(user);
     });
 
-    //reviews
+    //reviews//
 
     //posting
     app.post("/reviews", async (req, res) => {
@@ -383,50 +382,53 @@ async function run() {
       res.send(result);
     });
 
-  //delete comment added by "Fahima"
-  app.delete("/comments/:id", async (req, res) => {
-    const id = req.params.id;
-    const filter = { _id: new ObjectId(id) };
-    const result = await blogsCommentCollection.deleteOne(filter);
-    res.send(result);
-  });
+    //delete comment added by "Fahima"
+    app.delete("/comments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogsCommentCollection.deleteOne(filter);
+      res.send(result);
+    });
 
-      //patch for properties to verified
-      app.patch("/verification", async (req, res) => {
-        const id = req.body.id;
-        const query = { _id: new ObjectId(id) };
-        const status = req.body.propertyStatus;
-        const statusChange = {
-          $set: {
-            "property_info.verify_status": status,
-          },
-        };
-        const result = await PropertyCollection.updateOne(query, statusChange);
-        res.send(result);
-      });
+    //patch for properties to verified
+    app.patch("/verification", async (req, res) => {
+      const id = req.body.id;
+      const query = { _id: new ObjectId(id) };
+      const status = req.body.propertyStatus;
+      const statusChange = {
+        $set: {
+          "property_info.verify_status": status,
+        },
+      };
+      const result = await PropertyCollection.updateOne(query, statusChange);
+      res.send(result);
+    });
 
-      //saved property remove
-      app.delete("/saved-properties/:id", async (req, res) => {
+    //saved property remove
+    app.delete("/saved-properties/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const result = await Saved_PropertiesCollection.deleteOne(filter);
       res.send(result);
     });
 
-
     //change user role to owner
-    // app.patch("/ownerRequest/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const statusChange = {
-    //     $set: {
-    //       status: "approved",
-    //     },
-    //   };
-    //   const result = await ownerCollection.updateOne(filter, statusChange);
-    //   res.send(result);
-    // });
+    app.patch("/roleChange", async (req, res) => {
+      const ownerEmail = req.body.email;
+      const role = req.body.status;
+      const filter = { email: ownerEmail };
+      // const result = await ownerCollection.findOne(filter, statusChange);
+      const roleChange = { $set: { role: role } };
+      const result = await userCollection.updateOne(filter, roleChange);
 
+      const filter1 = { ownerEmail: ownerEmail };
+      const statusChange = {
+        $set: { ownerStatus: role === "owner" ? true : false },
+      };
+      const result1 = await ownerCollection.updateOne(filter1, statusChange);
+      // res.send(result, result1);
+      res.status(200).json({ userUpdateResult: result, ownerUpdateResult: result1 });
+    });
 
     // code by "Fahima"
 
@@ -487,8 +489,6 @@ async function run() {
       const result = await blogsCommentCollection.find().toArray();
       res.send(result);
     });
-
-    //code by Fahima
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
