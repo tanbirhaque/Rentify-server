@@ -61,7 +61,7 @@ async function run() {
       res.send(result);
     });
 
-    // Request property data individually get by Sojib
+    // Request property data individually get by Sajib
     app.get("/requested-properties", async (req, res) => {
       const result = await Requested_PropertiesCollection.find().toArray();
       res.send(result);
@@ -157,6 +157,7 @@ async function run() {
       );
       res.send(result);
     });
+
     app.put("/reject/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -286,6 +287,7 @@ async function run() {
     });
 
     //coded by Fahima
+
     //for users
     //for users API created by Fahima
     //avoids multiple entry of same email
@@ -306,17 +308,17 @@ async function run() {
     });
 
     //change user role to owner
-    app.patch("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const roleChange = {
-        $set: {
-          role: "Owner",
-        },
-      };
-      const result = await userCollection.updateOne(filter, roleChange);
-      res.send(result);
-    });
+    // app.patch("/users/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const roleChange = {
+    //     $set: {
+    //       role: "Owner",
+    //     },
+    //   };
+    //   const result = await userCollection.updateOne(filter, roleChange);
+    //   res.send(result);
+    // });
 
     //get single user
     app.get("/users/:email", async (req, res) => {
@@ -325,7 +327,7 @@ async function run() {
       res.send(user);
     });
 
-    //reviews
+    //reviews//
 
     //posting
     app.post("/reviews", async (req, res) => {
@@ -348,6 +350,14 @@ async function run() {
       res.send(result);
     });
 
+    //delete blog
+    app.delete("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogCollection.deleteOne(filter);
+      res.send(result);
+    });
+
     //ownerRequest
     //for avoiding multiple request with same email
     app.post("/ownerRequest", async (req, res) => {
@@ -366,7 +376,56 @@ async function run() {
       res.send(result);
     });
 
-    //code by "Fahima"
+    //delete comment added by "Fahima"
+    app.delete("/comments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogsCommentCollection.deleteOne(filter);
+      res.send(result);
+    });
+
+    //patch for properties to verified
+    app.patch("/verification", async (req, res) => {
+      const id = req.body.id;
+      const query = { _id: new ObjectId(id) };
+      const status = req.body.propertyStatus;
+      const statusChange = {
+        $set: {
+          "property_info.verify_status": status,
+        },
+      };
+      const result = await PropertyCollection.updateOne(query, statusChange);
+      res.send(result);
+    });
+
+    //saved property remove
+    app.delete("/saved-properties/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await Saved_PropertiesCollection.deleteOne(filter);
+      res.send(result);
+    });
+
+    //change user role to owner
+    app.patch("/roleChange", async (req, res) => {
+      const ownerEmail = req.body.email;
+      const role = req.body.status;
+      const filter = { email: ownerEmail };
+      // const result = await ownerCollection.findOne(filter, statusChange);
+      const roleChange = { $set: { role: role } };
+      const result = await userCollection.updateOne(filter, roleChange);
+
+      const filter1 = { ownerEmail: ownerEmail };
+      const statusChange = {
+        $set: { ownerStatus: role === "owner" ? true : false },
+      };
+      const result1 = await ownerCollection.updateOne(filter1, statusChange);
+      // res.send(result, result1);
+      res.status(200).json({ userUpdateResult: result, ownerUpdateResult: result1 });
+    });
+
+    // code by "Fahima"
+
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
@@ -425,15 +484,6 @@ async function run() {
       res.send(result);
     });
 
-    //delete comment added by "Fahima"
-    app.delete("/comments/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await blogsCommentCollection.deleteOne(filter);
-      res.send(result);
-    });
-
-    //code by Fahima
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
