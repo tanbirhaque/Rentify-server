@@ -61,6 +61,39 @@ async function run() {
       res.send(result);
     });
 
+    // for update property coded by Sadia
+    // app.patch("/properties/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const options = { upsert: true };
+    //   const updatedProerties = req.body;
+    //   const product = {
+    //     $set: {
+    //       name: updatedProerties.name,
+    //       brand: updatedProerties.brand,
+    //       category: updatedProerties.category,
+    //       image: updatedProerties.image,
+    //       price: updatedProerties.price,
+    //       rating: updatedProerties.rating,
+    //       description: updatedProerties.description,
+    //     },
+    //   };
+    //   const result = await productsCollection.updateOne(
+    //     filter,
+    //     product,
+    //     options
+    //   );
+    //   res.send(result);
+    // });
+
+    // for delete a property coded by Sadia
+    app.delete('/properties/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await PropertyCollection.deleteOne(query);
+      res.send(result);
+    })
+
     // Request property data individually get by Sajib
     app.get("/requested-properties", async (req, res) => {
       const result = await Requested_PropertiesCollection.find().toArray();
