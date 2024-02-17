@@ -427,9 +427,18 @@ async function run() {
       };
       const result1 = await ownerCollection.updateOne(filter1, statusChange);
       // res.send(result, result1);
-      res.status(200).json({ userUpdateResult: result, ownerUpdateResult: result1 });
+      res
+        .status(200)
+        .json({ userUpdateResult: result, ownerUpdateResult: result1 });
     });
 
+    //for deleting rent request
+    app.delete("/requested-properties/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await Requested_PropertiesCollection.deleteOne(filter);
+      res.send(result);
+    });
     // code by "Fahima"
 
     // payment intent api by Rana
