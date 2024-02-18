@@ -333,7 +333,6 @@ async function run() {
       const result = await reviewCollection.find().toArray();
       res.send(result);
     });
-
     //review delete
     app.delete("/reviews/:id", async (req, res) => {
       const id = req.params.id;
