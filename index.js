@@ -61,7 +61,7 @@ async function run() {
       res.send(result);
     });
 
-    // for update property coded by Sadia
+    // for update a property coded by Sadia
     app.patch("/properties/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
@@ -69,13 +69,7 @@ async function run() {
       const updatedProerties = req.body;
       const product = {
         $set: {
-          property_title: updatedProerties.property_title,
-          bedroom: updatedProerties.bedroom,
-          // category: updatedProerties.category,
-          // image: updatedProerties.image,
-          // price: updatedProerties.price,
-          // rating: updatedProerties.rating,
-          // description: updatedProerties.description,
+          property_info: updatedProerties.property_info
         },
       };
       const result = await PropertyCollection.updateOne(
