@@ -40,14 +40,14 @@ async function run() {
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // properties data post api creat by Sojib
+    // properties data post api create by Sojib
     app.post("/properties", async (req, res) => {
       const newProperties = req.body;
       const result = await PropertyCollection.insertOne(newProperties);
       res.send(result);
     });
 
-    // properties data get api creat by Sojib
+    // properties data get api create by Sojib
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
@@ -61,11 +61,6 @@ async function run() {
       res.send(result);
     });
 
-    // Request property data individually get by Sajib
-    app.get("/requested-properties", async (req, res) => {
-      const result = await Requested_PropertiesCollection.find().toArray();
-      res.send(result);
-    });
 
     // This API will call all the requested user properties by email address, including rental and sale properties. [by- Tanbir]
     app.get("/all_requested", async (req, res) => {
@@ -205,12 +200,14 @@ async function run() {
         return res.status(401).send({ message: "unauthorized access" });
       }
     });
+
     app.get("/recentAddProperties", async (req, res) => {
       const email = req.query.email;
       const query = { "property_info.owner_details.owner_email": email };
       const ownerProperties = await PropertyCollection.find(query).toArray();
       res.send(ownerProperties);
     });
+
     // property data request post by Sojib
     app.post("/requested-properties", async (req, res) => {
       const propertyRequest = req.body;
@@ -286,8 +283,8 @@ async function run() {
       }
     });
 
-    //coded by Fahima
 
+    //coded by Fahima
     //for users
     //for users API created by Fahima
     //avoids multiple entry of same email
@@ -320,7 +317,8 @@ async function run() {
     //   res.send(result);
     // });
 
-    //get single user
+    // get single user
+
     app.get("/users/:email", async (req, res) => {
       const email = req.params.email;
       const user = await userCollection.findOne({ email });
@@ -341,6 +339,7 @@ async function run() {
       const result = await reviewCollection.find().toArray();
       res.send(result);
     });
+
     //review delete
     app.delete("/reviews/:id", async (req, res) => {
       const id = req.params.id;
@@ -432,8 +431,8 @@ async function run() {
       const result = await Requested_PropertiesCollection.deleteOne(filter);
       res.send(result);
     });
+    
     // code by "Fahima"
-
     // payment intent api by Rana
     app.post("/create-payment-intent", async (req, res) => {
       const { price } = req.body;
@@ -467,20 +466,20 @@ async function run() {
       res.send({ paymentResult, deleteRes, patchRes });
     });
 
-    // blogs post api creat & codded by sojib
+    // blogs post api create & codded by sojib
     app.post("/blogs", async (req, res) => {
       const newBlog = req.body;
       const result = await blogCollection.insertOne(newBlog);
       res.send(result);
     });
 
-    // blogs get api creat & codded by sojib
+    // blogs get api create & codded by sojib
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
       res.send(result);
     });
 
-    // blogs comment creat & codded by sojib
+    // blogs comment create & codded by sojib
     app.post("/comments", async (req, res) => {
       const newComment = req.body;
       const result = await blogsCommentCollection.insertOne(newComment);
