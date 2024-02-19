@@ -62,29 +62,29 @@ async function run() {
     });
 
     // for update property coded by Sadia
-    // app.patch("/properties/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const options = { upsert: true };
-    //   const updatedProerties = req.body;
-    //   const product = {
-    //     $set: {
-    //       name: updatedProerties.name,
-    //       brand: updatedProerties.brand,
-    //       category: updatedProerties.category,
-    //       image: updatedProerties.image,
-    //       price: updatedProerties.price,
-    //       rating: updatedProerties.rating,
-    //       description: updatedProerties.description,
-    //     },
-    //   };
-    //   const result = await productsCollection.updateOne(
-    //     filter,
-    //     product,
-    //     options
-    //   );
-    //   res.send(result);
-    // });
+    app.patch("/properties/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const updatedProerties = req.body;
+      const product = {
+        $set: {
+          property_title: updatedProerties.property_title,
+          bedroom: updatedProerties.bedroom,
+          // category: updatedProerties.category,
+          // image: updatedProerties.image,
+          // price: updatedProerties.price,
+          // rating: updatedProerties.rating,
+          // description: updatedProerties.description,
+        },
+      };
+      const result = await PropertyCollection.updateOne(
+        filter,
+        product,
+        options
+      );
+      res.send(result);
+    });
 
     // for delete a property coded by Sadia
     app.delete('/properties/:id', async (req, res) => {
