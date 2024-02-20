@@ -37,6 +37,7 @@ async function run() {
     const paymentCollection = client.db("RentifyDB").collection("payments");
     const blogCollection = client.db("RentifyDB").collection("blogs");
     const blogsCommentCollection = client.db("RentifyDB").collection("blogsComment");
+    const blogsCommentsReplyCollection = client.db("RentifyDB").collection("blogsCommentsReply");
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
@@ -400,21 +401,34 @@ async function run() {
       res.send(result);
     });
 
-    // blogs get api creat & codded by sojib
+    // blogs get api create & codded by sojib
     app.get("/blogs", async (req, res) => {
       const result = await blogCollection.find().toArray();
       res.send(result);
     });
 
-    // blogs comment creat & codded by sojib
+    // blogs comment post api create & codded by sojib
     app.post("/comments", async (req, res) => {
       const newComment = req.body;
       const result = await blogsCommentCollection.insertOne(newComment);
       res.send(result);
     });
-
+    // blogs comment get api create & codded by sojib
     app.get("/comments", async (req, res) => {
       const result = await blogsCommentCollection.find().toArray();
+      res.send(result)
+    })
+
+    // blogs comment reply post api create & codded by sojib
+    app.post("/commentsReply", async (req, res) => {
+      const commentsReply = req.body;
+      const result = await blogsCommentsReplyCollection.insertOne(commentsReply)
+      res.send(result)
+    })
+
+    // blogs comment reply get api create & codded by sojib
+    app.get("/commentsReply", async (req, res) => {
+      const result = await blogsCommentsReplyCollection.find().toArray();
       res.send(result)
     })
 
