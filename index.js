@@ -12,9 +12,9 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
-const uri =
-  "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
+// const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+// const uri =
+//   "mongodb+srv://tanbirhaque53:UpQtG2pYkWP4eEGa@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority";
 
 // const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.tgscumi.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -498,7 +498,7 @@ async function run() {
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
-      "Pinged your deployment. You successfully connected to MongoDB!"
+      "Pinged your deployment. You successfully connected to MongoDB! By NODE and Express on index.js"
     );
   } finally {
     // Ensures that the client will close when you finish/error
@@ -509,9 +509,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Rentify is running");
+  res.send("Rentify is running file(index.js) v-0.1");
 });
 
 app.listen(port, () => {
-  console.log(`Rentify server is running on port ${port}`);
+  console.log(`Rentify server is running on port ${port} file(index.js) v-0.1`);
 });
