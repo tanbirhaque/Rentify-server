@@ -382,7 +382,7 @@ async function run() {
       const query = { _id: new ObjectId(payment.requestId) };
       const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
 
-      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+      // This functions bellow are working for patch the status of property from the property collection by filtering the specific property collection using propertyID from the payment object. [Added by -Tanbir]
       const filter = { _id: new ObjectId(payment.propertyId) };
       const updateDoc = {
         $set: {
