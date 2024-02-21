@@ -335,13 +335,13 @@ async function run() {
       res.send(result);
     });
 
-    //getting
-    app.get("/reviews", async (req, res) => {
-      const result = await reviewCollection.find().toArray();
-      res.send(result);
-    });
+    //getting [done]
+    // app.get("/reviews", async (req, res) => {
+    //   const result = await reviewCollection.find().toArray();
+    //   res.send(result);
+    // });
 
-    //review delete
+    //review delete [done]
     // app.delete("/reviews/:id", async (req, res) => {
     //   const id = req.params.id;
     //   const filter = { _id: new ObjectId(id) };
@@ -349,13 +349,13 @@ async function run() {
     //   res.send(result);
     // });
 
-    //delete blog [done]
-    // app.delete("/blogs/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const result = await blogCollection.deleteOne(filter);
-    //   res.send(result);
-    // });
+    //delete blog 
+    app.delete("/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogCollection.deleteOne(filter);
+      res.send(result);
+    });
 
     //ownerRequest
     //for avoiding multiple request with same email
@@ -375,13 +375,13 @@ async function run() {
       res.send(result);
     });
 
-    //delete comment added by "Fahima"
-    app.delete("/comments/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await blogsCommentCollection.deleteOne(filter);
-      res.send(result);
-    });
+    //delete comment added by "Fahima" [done]
+    // app.delete("/comments/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const result = await blogsCommentCollection.deleteOne(filter);
+    //   res.send(result);
+    // });
 
     //patch for properties to verified
     app.patch("/verification", async (req, res) => {
@@ -480,17 +480,18 @@ async function run() {
     //   res.send(result);
     // });
 
-    // blogs comment create & codded by sojib
-    app.post("/comments", async (req, res) => {
-      const newComment = req.body;
-      const result = await blogsCommentCollection.insertOne(newComment);
-      res.send(result);
-    });
+    // blogs comment create & codded by sojib [done]
+    // app.post("/comments", async (req, res) => {
+    //   const newComment = req.body;
+    //   const result = await blogsCommentCollection.insertOne(newComment);
+    //   res.send(result);
+    // });
 
-    app.get("/comments", async (req, res) => {
-      const result = await blogsCommentCollection.find().toArray();
-      res.send(result);
-    });
+    // [done]
+    // app.get("/comments", async (req, res) => {
+    //   const result = await blogsCommentCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();

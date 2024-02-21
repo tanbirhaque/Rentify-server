@@ -3,31 +3,31 @@ const { model, Schema } = require("mongoose");
 const CommentsSchema = new Schema({
     name: {
         type: String,
-        required: true
+        default: ""
     },
     email: {
         type: String,
-        required: true
+        default: ""
     },
     img: {
         type: String,
-        required: true
+        default: ""
     },
     subject: {
         type: String,
-        required: true
+        default: ""
     },
     message: {
         type: String,
-        required: true
+        default: ""
     },
     blogId: {
         type: String,
-        required: true
+        default: ""
     },
     date: {
         type: String,
-        required: true
+        default: ""
     },
 })
 
