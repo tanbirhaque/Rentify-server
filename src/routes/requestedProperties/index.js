@@ -8,6 +8,7 @@ const requestedPropertiesInsert = require('../../api/requestedProperties/request
 const requestReject = require('../../api/requestedProperties/requestReject');
 const requestedRentProperties = require('../../api/requestedProperties/requestedRentProperties');
 const requestedSaleProperties = require('../../api/requestedProperties/requestedSaleProperties');
+const requestPropertiesDelete = require('../../api/requestedProperties/requestPropertiesDelete');
 const router = require('express').Router();
 
 router.post("/requested-properties", requestedPropertiesInsert)
@@ -19,5 +20,6 @@ router.get("/ownerRentReq", ownerRentRequest)
 router.get("/ownerSaleReq", ownerSaleRequest)
 router.get("/requested-sale", requestedSaleProperties)
 router.get("/requested-rent", requestedRentProperties)
+router.delete("/requested-properties/:id", requestPropertiesDelete)
 
 module.exports = router;

@@ -210,12 +210,13 @@ async function run() {
     //   }
     // });
 
-    app.get("/recentAddProperties", async (req, res) => {
-      const email = req.query.email;
-      const query = { "property_info.owner_details.owner_email": email };
-      const ownerProperties = await PropertyCollection.find(query).toArray();
-      res.send(ownerProperties);
-    });
+    // [done]
+    // app.get("/recentAddProperties", async (req, res) => {
+    //   const email = req.query.email;
+    //   const query = { "property_info.owner_details.owner_email": email };
+    //   const ownerProperties = await PropertyCollection.find(query).toArray();
+    //   res.send(ownerProperties);
+    // });
 
     // property data request post by Sojib [done]
     // app.post("/requested-properties", async (req 
@@ -429,13 +430,13 @@ async function run() {
     //     .json({ userUpdateResult: result, ownerUpdateResult: result1 });
     // });
 
-    //for deleting rent request
-    app.delete("/requested-properties/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await Requested_PropertiesCollection.deleteOne(filter);
-      res.send(result);
-    });
+    //for deleting rent request [done]
+    // app.delete("/requested-properties/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const result = await Requested_PropertiesCollection.deleteOne(filter);
+    //   res.send(result);
+    // });
 
     // code by "Fahima"
     // payment intent api by Rana [done]
