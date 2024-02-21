@@ -24,7 +24,7 @@ const connectDB = async () => {
     console.log("Connecting to database");
     const mongoURI = getConnectionString();
     await mongoose.connect(mongoURI, { dbName: process.env.DB_NAME });
-    console.log("connected to database");
+    console.log("Connected to database file(app.js) v-0.2");
 };
 
 
