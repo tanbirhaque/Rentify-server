@@ -61,11 +61,11 @@ async function run() {
     //   res.send(result);
     // });
 
-    // Request property data individually get by Sajib
-    app.get("/requested-properties", async (req, res) => {
-      const result = await Requested_PropertiesCollection.find().toArray();
-      res.send(result);
-    });
+    // Request property data individually get by Sajib [done]
+    // app.get("/requested-properties", async (req, res) => {
+    //   const result = await Requested_PropertiesCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     // This API will call all the requested user properties by email address, including rental and sale properties. [by- Tanbir] [done]
     // app.get("/all_requested", async (req, res) => {
@@ -126,6 +126,7 @@ async function run() {
     //     return res.status(401).send({ message: "unauthorized access" });
     //   }
     // });
+
     //This API calls the  sale request of an owner by konika [done]
     // app.get("/ownerSaleReq", async (req, res) => {
     //   const email = req.query.email;
@@ -142,6 +143,7 @@ async function run() {
     //     return res.status(401).send({ message: "unauthorized access" });
     //   }
     // });
+
     //[done] 
     // app.put("/accept/:id", async (req, res) => {
     //   const id = req.params.id;
@@ -157,6 +159,7 @@ async function run() {
     //   );
     //   res.send(result);
     // });
+
     // [done]
     // app.put("/reject/:id", async (req, res) => {
     //   const id = req.params.id;
@@ -300,23 +303,24 @@ async function run() {
     //   res.send(result);
     // });
 
-    app.get("/users", async (req, res) => {
-      const result = await userCollection.find().toArray();
-      res.send(result);
-    });
+      // [done]
+    // app.get("/users", async (req, res) => {
+    //   const result = await userCollection.find().toArray();
+    //   res.send(result);
+    // });
 
-    //change user role to owner
-    app.patch("/users/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const roleChange = {
-        $set: {
-          role: "Owner",
-        },
-      };
-      const result = await userCollection.updateOne(filter, roleChange);
-      res.send(result);
-    });
+    // //change user role to owner [this roleChange api double]
+    // app.patch("/users/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const roleChange = {
+    //     $set: {
+    //       role: "Owner",
+    //     },
+    //   };
+    //   const result = await userCollection.updateOne(filter, roleChange);
+    //   res.send(result);
+    // });
 
     // get single user
     // [done]
@@ -328,12 +332,12 @@ async function run() {
 
 
     // reviews
-    // posting
-    app.post("/reviews", async (req, res) => {
-      const review = req.body;
-      const result = await reviewCollection.insertOne(review);
-      res.send(result);
-    });
+    // posting [done]
+    // app.post("/reviews", async (req, res) => {
+    //   const review = req.body;
+    //   const result = await reviewCollection.insertOne(review);
+    //   res.send(result);
+    // });
 
     //getting [done]
     // app.get("/reviews", async (req, res) => {
@@ -349,31 +353,32 @@ async function run() {
     //   res.send(result);
     // });
 
-    //delete blog 
-    app.delete("/blogs/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await blogCollection.deleteOne(filter);
-      res.send(result);
-    });
+    //delete blog [done]
+    // app.delete("/blogs/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const result = await blogCollection.deleteOne(filter);
+    //   res.send(result);
+    // });
 
     //ownerRequest
-    //for avoiding multiple request with same email
-    app.post("/ownerRequest", async (req, res) => {
-      const owner = req.body;
-      const query = { ownerEmail: owner.ownerEmail };
-      const ownerRequestExist = await ownerCollection.findOne(query);
-      if (ownerRequestExist) {
-        return res.send({ insertedId: null });
-      }
-      const result = await ownerCollection.insertOne(owner);
-      res.send(result);
-    });
+    //for avoiding multiple request with same email [done]
+    // app.post("/ownerRequest", async (req, res) => {
+    //   const owner = req.body;
+    //   const query = { ownerEmail: owner.ownerEmail };
+    //   const ownerRequestExist = await ownerCollection.findOne(query);
+    //   if (ownerRequestExist) {
+    //     return res.send({ insertedId: null });
+    //   }
+    //   const result = await ownerCollection.insertOne(owner);
+    //   res.send(result);
+    // });
 
-    app.get("/ownerRequest", async (req, res) => {
-      const result = await ownerCollection.find().toArray();
-      res.send(result);
-    });
+    // [done]
+    // app.get("/ownerRequest", async (req, res) => {
+    //   const result = await ownerCollection.find().toArray();
+    //   res.send(result);
+    // });
 
     //delete comment added by "Fahima" [done]
     // app.delete("/comments/:id", async (req, res) => {
@@ -383,47 +388,46 @@ async function run() {
     //   res.send(result);
     // });
 
-    //patch for properties to verified
-    app.patch("/verification", async (req, res) => {
-      const id = req.body.id;
-      const query = { _id: new ObjectId(id) };
-      const status = req.body.propertyStatus;
-      const statusChange = {
-        $set: {
-          "property_info.verify_status": status,
-        },
-      };
-      const result = await PropertyCollection.updateOne(query, statusChange);
-      res.send(result);
-    });
+    //patch for properties to verified [done]
+    // app.patch("/verification", async (req, res) => {
+    //   const id = req.body.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const status = req.body.propertyStatus;
+    //   const statusChange = {
+    //     $set: {
+    //       "property_info.verify_status": status,
+    //     },
+    //   };
+    //   const result = await PropertyCollection.updateOne(query, statusChange);
+    //   res.send(result);
+    // });
 
-    //saved property remove
-    app.delete("/saved-properties/:id", async (req, res) => {
-      const id = req.params.id;
-      const filter = { _id: new ObjectId(id) };
-      const result = await Saved_PropertiesCollection.deleteOne(filter);
-      res.send(result);
-    });
+    //saved property remove [done]
+    // app.delete("/saved-properties/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const result = await Saved_PropertiesCollection.deleteOne(filter);
+    //   res.send(result);
+    // });
 
-    //change user role to owner
-    app.patch("/roleChange", async (req, res) => {
-      const ownerEmail = req.body.email;
-      const role = req.body.status;
-      const filter = { email: ownerEmail };
-      // const result = await ownerCollection.findOne(filter, statusChange);
-      const roleChange = { $set: { role: role } };
-      const result = await userCollection.updateOne(filter, roleChange);
-
-      const filter1 = { ownerEmail: ownerEmail };
-      const statusChange = {
-        $set: { ownerStatus: role === "owner" ? true : false },
-      };
-      const result1 = await ownerCollection.updateOne(filter1, statusChange);
-      // res.send(result, result1);
-      res
-        .status(200)
-        .json({ userUpdateResult: result, ownerUpdateResult: result1 });
-    });
+    //change user role to owner [done]
+    // app.patch("/roleChange", async (req, res) => {
+    //   const ownerEmail = req.body.email;
+    //   const role = req.body.status;
+    //   const filter = { email: ownerEmail };
+    //   // const result = await ownerCollection.findOne(filter, statusChange);
+    //   const roleChange = { $set: { role: role } };
+    //   const result = await userCollection.updateOne(filter, roleChange);
+    //   const filter1 = { ownerEmail: ownerEmail };
+    //   const statusChange = {
+    //     $set: { ownerStatus: role === "owner" ? true : false },
+    //   };
+    //   const result1 = await ownerCollection.updateOne(filter1, statusChange);
+    //   // res.send(result, result1);
+    //   res
+    //     .status(200)
+    //     .json({ userUpdateResult: result, ownerUpdateResult: result1 });
+    // });
 
     //for deleting rent request
     app.delete("/requested-properties/:id", async (req, res) => {
@@ -434,38 +438,39 @@ async function run() {
     });
 
     // code by "Fahima"
-    // payment intent api by Rana
-    app.post("/create-payment-intent", async (req, res) => {
-      const { price } = req.body;
-      const amount = parseInt(price * 100);
+    // payment intent api by Rana [done]
+    // app.post("/create-payment-intent", async (req, res) => {
+    //   const { price } = req.body;
+    //   const amount = parseInt(price * 100);
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: amount,
-        currency: "usd",
-        payment_method_types: ["card"],
-      });
-      res.send({
-        clientSecret: paymentIntent.client_secret,
-      });
-    });
+    //   const paymentIntent = await stripe.paymentIntents.create({
+    //     amount: amount,
+    //     currency: "usd",
+    //     payment_method_types: ["card"],
+    //   });
+    //   res.send({
+    //     clientSecret: paymentIntent.client_secret,
+    //   });
+    // });
 
-    app.post("/payments", async (req, res) => {
-      const payment = req.body;
-      const paymentResult = await paymentCollection.insertOne(payment);
-      const query = { _id: new ObjectId(payment.requestId) };
-      const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
+    // [done]
+    // app.post("/payments", async (req, res) => {
+    //   const payment = req.body;
+    //   const paymentResult = await paymentCollection.insertOne(payment);
+    //   const query = { _id: new ObjectId(payment.requestId) };
+    //   const deleteRes = await Requested_PropertiesCollection.deleteOne(query);
 
-      // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
-      const filter = { _id: new ObjectId(payment.propertyId) };
-      const updateDoc = {
-        $set: {
-          "property_info.property_details.property_status":
-            payment.property_status,
-        },
-      };
-      const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
-      res.send({ paymentResult, deleteRes, patchRes });
-    });
+    //   // This functions bellow are working for patch the status of property from the property collection by filtering the spesific property collection using propertyID from the payment object. [Added by -Tanbir]
+    //   const filter = { _id: new ObjectId(payment.propertyId) };
+    //   const updateDoc = {
+    //     $set: {
+    //       "property_info.property_details.property_status":
+    //         payment.property_status,
+    //     },
+    //   };
+    //   const patchRes = await PropertyCollection.updateOne(filter, updateDoc);
+    //   res.send({ paymentResult, deleteRes, patchRes });
+    // });
 
     // blogs post api create & codded by sojib [done]
     // app.post("/blogs", async (req, res) => {
@@ -496,22 +501,22 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-      await client.db("admin").command({ ping: 1 });
-      console.log(
-        "Pinged your deployment. You successfully connected to MongoDB!"
-      );
-    } finally {
+    await client.db("admin").command({ ping: 1 });
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+  } finally {
     //   // Ensures that the client will close when you finish/error
     //   // await client.close();
-    }
   }
+}
 
 run().catch(console.dir);
 
-  app.get("/", (req, res) => {
-    res.send("Rentify is running file(index.js) v-0.1");
-  });
+app.get("/", (req, res) => {
+  res.send("Rentify is running file(index.js) v-0.1");
+});
 
-  app.listen(port, () => {
-    console.log(`Rentify server is running on port ${port} file(index.js) v-0.1`);
-  })
+app.listen(port, () => {
+  console.log(`Rentify server is running on port ${port} file(index.js) v-0.1`);
+})

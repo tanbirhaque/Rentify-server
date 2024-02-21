@@ -8,6 +8,7 @@ const router = require('express').Router();
 router.post("/users", userInsert)
 router.get("/users", usersFindAll)
 router.get("/users/:email", usersFind)
-router.patch("/users/:id", usersMakeOwner)
+// router.patch("/users/:id", usersMakeOwner)
+router.patch("/roleChange", usersMakeOwner)
 
 module.exports = router;
