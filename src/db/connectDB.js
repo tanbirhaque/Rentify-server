@@ -21,7 +21,7 @@ const getConnectionString = () => {
 };
 
 const connectDB = async () => {
-    console.log("Connected to database");
+    console.log("Connecting to database");
     const mongoURI = getConnectionString();
     await mongoose.connect(mongoURI, { dbName: process.env.DB_NAME });
     console.log("connected to database");

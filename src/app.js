@@ -5,6 +5,7 @@ require("dotenv").config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+// 
 const propertiesRoutes = require("./routes/properties")
 const savedPropertiesRoutes = require("./routes/savedProperties")
 const requestedProperties = require("./routes/requestedProperties")
@@ -15,9 +16,9 @@ const commentsRoutes = require("./routes/comments")
 const reviewsRoutes = require("./routes/reviews")
 const ownerRequestRoutes = require("./routes/ownerRequest");
 
+
 // It's export into middleware folder for use middleware 
 applyMiddleware(app)
-
 app.use(propertiesRoutes)
 app.use(savedPropertiesRoutes)
 app.use(requestedProperties)
