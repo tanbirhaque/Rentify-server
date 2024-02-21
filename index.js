@@ -40,14 +40,14 @@ async function run() {
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // properties data post api creat by Sojib
+    // properties data post api creat by Sadia
     app.post("/properties", async (req, res) => {
       const newProperties = req.body;
       const result = await PropertyCollection.insertOne(newProperties);
       res.send(result);
     });
 
-    // properties data get api creat by Sojib
+    // properties data get api creat by Sadia
     app.get("/properties", async (req, res) => {
       const result = await PropertyCollection.find().toArray();
       res.send(result);
