@@ -15,6 +15,7 @@ const blogsRoutes = require("./routes/blogs")
 const commentsRoutes = require("./routes/comments")
 const reviewsRoutes = require("./routes/reviews")
 const ownerRequestRoutes = require("./routes/ownerRequest");
+const commentsReplyRoutes = require("./routes/commentsReply")
 
 
 // It's export into middleware folder for use middleware 
@@ -28,6 +29,7 @@ app.use(blogsRoutes)
 app.use(commentsRoutes)
 app.use(reviewsRoutes)
 app.use(ownerRequestRoutes)
+app.use(commentsReplyRoutes)
 
 
 app.get("/health", (req, res) => {
@@ -50,10 +52,10 @@ app.use((err, req, res, next) => {
 
 // export into db folder for database connected
 const main = async () => {
-    await connectDB();
     app.listen(port, () => {
         console.log(`Rentify server is running on port ${port}`);
     });
+    await connectDB();
 
 }
 main()

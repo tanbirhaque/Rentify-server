@@ -304,7 +304,7 @@ async function run() {
     //   res.send(result);
     // });
 
-      // [done]
+    // [done]
     // app.get("/users", async (req, res) => {
     //   const result = await userCollection.find().toArray();
     //   res.send(result);
@@ -498,6 +498,19 @@ async function run() {
     //   const result = await blogsCommentCollection.find().toArray();
     //   res.send(result);
     // });
+
+    // blogs comment reply post api create & codded by sojib [done]
+    // app.post("/commentsReply", async (req, res) => {
+    //   const commentsReply = req.body;
+    //   const result = await blogsCommentsReplyCollection.insertOne(commentsReply)
+    //   res.send(result)
+    // })
+
+    // blogs comment reply get api create & codded by sojib [done]
+    // app.get("/commentsReply", async (req, res) => {
+    //   const result = await blogsCommentsReplyCollection.find().toArray();
+    //   res.send(result)
+    // })
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
