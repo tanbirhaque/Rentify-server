@@ -368,13 +368,14 @@ async function run() {
       const result = await reviewCollection.find().toArray();
       res.send(result);
     });
-    //review delete [done]
-    // app.delete("/reviews/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const result = await reviewCollection.deleteOne(filter);
-    //   res.send(result);
-    // });
+
+    // review delete [done]
+    app.delete("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await reviewCollection.deleteOne(filter);
+      res.send(result);
+    });
 
     //delete blog
     app.delete("/blogs/:id", async (req, res) => {
@@ -533,12 +534,12 @@ async function run() {
     })
 
     //delete comment added by "Fahima" [done]
-    // app.delete("/comments/:id", async (req, res) => {
-    //   const id = req.params.id;
-    //   const filter = { _id: new ObjectId(id) };
-    //   const result = await blogsCommentCollection.deleteOne(filter);
-    //   res.send(result);
-    // });
+    app.delete("/comments/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const result = await blogsCommentCollection.deleteOne(filter);
+      res.send(result);
+    });
 
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
