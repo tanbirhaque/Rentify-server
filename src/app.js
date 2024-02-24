@@ -16,6 +16,8 @@ const commentsRoutes = require("./routes/comments")
 const reviewsRoutes = require("./routes/reviews")
 const ownerRequestRoutes = require("./routes/ownerRequest");
 const commentsReplyRoutes = require("./routes/commentsReply")
+const chatRoutes = require("./routes/chat")
+const messageRoutes = require("./routes/message")
 
 
 // It's export into middleware folder for use middleware 
@@ -30,6 +32,8 @@ app.use(commentsRoutes)
 app.use(reviewsRoutes)
 app.use(ownerRequestRoutes)
 app.use(commentsReplyRoutes)
+app.use(chatRoutes)
+app.use(messageRoutes)
 
 
 app.get("/health", (req, res) => {
