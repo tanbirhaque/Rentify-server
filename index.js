@@ -40,7 +40,7 @@ async function run() {
     const reviewCollection = client.db("RentifyDB").collection("reviews");
     const ownerCollection = client.db("RentifyDB").collection("ownerRequest");
 
-    // properties data post api 
+    // properties data's post api 
     app.post("/properties", async (req, res) => {
       const newProperties = req.body;
       const result = await PropertyCollection.insertOne(newProperties);
