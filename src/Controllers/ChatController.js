@@ -1,11 +1,13 @@
 const Chat = require("../models/Chat")
 
 const createChat = async (req, res) => {
+    // const { }
     const newChat = new Chat({
-        members: [req.body.senderId, req.body.receiverId]
+        members: req.body.members
     })
     try {
         const result = await newChat.save()
+        console.log(result)
         res.status(200).json(result)
 
     } catch (error) {
@@ -29,11 +31,11 @@ const findChat = async (req, res) => {
         const chat = await Chat.findOne({
             members: { $all: [req.params.firstId, req.params.secondId] }
         })
-        console.log(chat)
+        // console.log(chat)
         res.status(200).json(chat)
     } catch (error) {
         res.status(500).json(error)
     }
 }
 
-module.exports = {createChat, usersChat, findChat}
+module.exports = { createChat, usersChat, findChat }
