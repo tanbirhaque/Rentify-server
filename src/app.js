@@ -1,3 +1,8 @@
+const io = require('socket.io')(8800, {
+    cors: {
+        origin: "http://localhost:5173"
+    }
+})
 const express = require("express");
 const applyMiddleware = require("./middleware/applyMiddleware");
 const connectDB = require("./db/connectDB");
@@ -34,6 +39,39 @@ app.use(ownerRequestRoutes)
 app.use(commentsReplyRoutes)
 app.use(chatRoutes)
 app.use(messageRoutes)
+
+let activeUsers = []
+
+io.on("connection", (socket) => {
+    // add new user
+    socket.on('new-user-add', (newUserId) => {
+        if (!activeUsers.some((user) => user.Id === newUserId)) {
+            activeUsers.push({
+                userId: newUserId,
+                socketId: socket.id
+            })
+        }
+        // console.log("connect users", activeUsers);
+        io.emit("get-users", activeUsers)
+    })
+
+    socket.on("send-message", (data) => {
+        const { receiverId } = data;
+        const user = activeUsers.find((user) => user.userId === receiverId)
+        console.log("sending receiverId :", receiverId)
+        console.log("data", data)
+        if (user) {
+            io.emit("receive-message", data);
+        }
+    })
+
+    socket.on("disconnect", () => {
+        activeUsers = activeUsers.filter((user) => user.socketId !== socket.id)
+        // console.log("user disconnect", activeUsers);
+        io.emit("get-users", activeUsers)
+    })
+})
+
 
 
 app.get("/health", (req, res) => {
