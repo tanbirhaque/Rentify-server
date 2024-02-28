@@ -3,7 +3,8 @@ const Chat = require("../models/Chat")
 const createChat = async (req, res) => {
     // const { }
     const newChat = new Chat({
-        members: req.body.members
+        members: req.body.members,
+        emails: req.body.emails
     })
     try {
         const result = await newChat.save()
