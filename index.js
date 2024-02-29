@@ -322,7 +322,6 @@ async function run() {
     //   const result = await userCollection.updateOne(filter, roleChange);
     //   res.send(result);
     // });
-
     // get single user
     // [done]
     // app.get("/users/:email", async (req, res) => {
