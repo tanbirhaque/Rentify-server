@@ -1,4 +1,4 @@
-const Requested_Properties = require("../../models/requestedProperties");
+const Requested_Properties = require("../../models/RequestedProperties");
 
 const requestedPropertiesFindAll = async (req, res) => {
     const result = await Requested_Properties.find();

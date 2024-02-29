@@ -1,4 +1,4 @@
-const Requested_Properties = require("../../models/requestedProperties");
+const Requested_Properties = require("../../models/RequestedProperties");
 
 const requestedPropertiesInsert = async (req, res) => {
     const requested_Properties = new Requested_Properties({

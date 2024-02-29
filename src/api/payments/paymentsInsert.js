@@ -1,6 +1,6 @@
 const { ObjectId } = require("mongodb");
 const Payments = require("../../models/Payments");
-const Requested_Properties = require("../../models/requestedProperties");
+const Requested_Properties = require("../../models/RequestedProperties");
 const Properties = require("../../models/Properties");
 
 

@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-const Requested_Properties = require("../../models/requestedProperties");
+const Requested_Properties = require("../../models/RequestedProperties");
 
 
 const requestPropertiesDelete = async (req, res) => {

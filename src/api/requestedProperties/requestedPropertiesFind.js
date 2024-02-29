@@ -1,4 +1,4 @@
-const Requested_Properties = require("../../models/requestedProperties");
+const Requested_Properties = require("../../models/RequestedProperties");
 
 const requestedPropertiesFind = async (req, res) => {
     const email = req.query.email;
