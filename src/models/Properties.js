@@ -9,9 +9,21 @@ const PropertiesSchema = new Schema({
             },
             owner_img: {
                 type: String,
+                default: "https://i.ibb.co/N7JQLnY/user-default-image.jpg"
+            },
+            owner_phone: {
+                type: String,
                 default: ""
             },
             owner_email: {
+                type: String,
+                default: ""
+            },
+            owner_profession: {
+                type: String,
+                default: ""
+            },
+            owner_address: {
                 type: String,
                 default: ""
             }
