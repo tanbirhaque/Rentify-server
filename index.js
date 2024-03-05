@@ -15,7 +15,7 @@ const main = async () => {
 main()
 
 
-// Code given by chatgpt used for debugging [commented after resolved]
+{// Code given by chatgpt used for debugging [commented after resolved]
 // require("dotenv").config();
 // const http = require('http');
 // const app = require('./src/app');
@@ -35,4 +35,4 @@ main()
 // };
 
 // main();
-
+}

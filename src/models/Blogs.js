@@ -18,12 +18,6 @@ const BlogsSchema = new Schema({
         type: String,
         default: ""
     },
-    description: {
-        type: String,
-        default: ""
-    },
-    commodoviverra: [],
-    majorFacility: [],
     bloggerInfo: {
         bloggerName: {
             type: String,
@@ -34,10 +28,6 @@ const BlogsSchema = new Schema({
             default: ""
         },
         bloggerImg: {
-            type: String,
-            default: ""
-        },
-        bloggerDetails: {
             type: String,
             default: ""
         }
