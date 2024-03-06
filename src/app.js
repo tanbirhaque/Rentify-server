@@ -54,13 +54,4 @@ app.use((err, req, res, next) => {
     })
 })
 
-// export into db folder for database connected
-// const main = async () => {
-//     app.listen(port, () => {
-//         console.log(`Rentify server is running on port ${port}`);
-//     });
-//     await connectDB();
-
-// }
-// main()
 module.exports = app
